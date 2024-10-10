@@ -3,10 +3,7 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 
-public func configure(_ app: Application) async throws {
-    // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-    
+public func configureDB(_ app: Application) async throws {
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
         port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
@@ -19,12 +16,12 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(CreateWord())
     app.migrations.add(CreateReference())
     app.migrations.add(CreateTranslation())
-    
-    // register routes
-    try routes(app)
 }
 
-func routes(_ app: Application) throws {
+func configureRoutes(_ app: Application) throws {
+    // uncomment to serve files from /Public folder
+    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    
     app.get { req async in
         "It works!"
     }

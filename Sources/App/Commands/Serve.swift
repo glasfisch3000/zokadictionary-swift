@@ -16,6 +16,11 @@ struct Serve: AsyncParsableCommand {
         aliases: ["run"]
     )
     
+    enum MigrationFlag: String, EnumerableFlag {
+        case migrate
+        case revert
+    }
+    
     @ArgumentParser.Option(name: [.short, .customLong("env")])
     private var environment: ParsableEnvironment = .development
     
@@ -24,6 +29,9 @@ struct Serve: AsyncParsableCommand {
     
     @ArgumentParser.Option(name: [.long, .customShort("H")])
     private var hostname: String = "127.0.0.1"
+    
+    @ArgumentParser.Flag(exclusivity: .exclusive)
+    private var migration: MigrationFlag?
     
     init() { }
     
@@ -37,6 +45,29 @@ struct Serve: AsyncParsableCommand {
         app.http.server.configuration.port = Int(port)
         app.http.server.configuration.hostname = hostname
 
-        try await runApp(app)
+        // This attempts to install NIO as the Swift Concurrency global executor.
+        // You can enable it if you'd like to reduce the amount of context switching between NIO and Swift Concurrency.
+        // Note: this has caused issues with some libraries that use `.wait()` and cleanly shutting down.
+        // If enabled, you should be careful about calling async functions before this point as it can cause assertion failures.
+        // let executorTakeoverSuccess = NIOSingletons.unsafeTryInstallSingletonPosixEventLoopGroupAsConcurrencyGlobalExecutor()
+        // app.logger.debug("Tried to install SwiftNIO's EventLoopGroup as Swift's global concurrency executor", metadata: ["success": .stringConvertible(executorTakeoverSuccess)])
+        
+        do {
+            try await configureDB(app)
+            switch migration {
+            case .migrate: try await app.autoMigrate()
+            case .revert: try await app.autoRevert()
+            case nil: break
+            }
+            
+            try configureRoutes(app)
+        } catch {
+            app.logger.report(error: error)
+            try? await app.asyncShutdown()
+            throw error
+        }
+        
+        try await app.execute()
+        try await app.asyncShutdown()
     }
 }
