@@ -1,5 +1,6 @@
 import ArgumentParser
 import Vapor
+import NIOFileSystem
 
 struct Serve: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
@@ -25,6 +26,9 @@ struct Serve: AsyncParsableCommand {
     private var environment: ParsableEnvironment = .development
     
     @ArgumentParser.Option(name: .shortAndLong)
+    private var configFile: FilePath?
+    
+    @ArgumentParser.Option(name: .shortAndLong)
     private var port: UInt16 = 8080
     
     @ArgumentParser.Option(name: [.long, .customShort("H")])
@@ -36,6 +40,8 @@ struct Serve: AsyncParsableCommand {
     init() { }
     
     func run() async throws {
+        let config = try await readAppConfig(path: configFile)
+        
         var env = environment.makeEnvironment()
         env.commandInput.arguments = ["serve"]
         
@@ -53,7 +59,7 @@ struct Serve: AsyncParsableCommand {
         // app.logger.debug("Tried to install SwiftNIO's EventLoopGroup as Swift's global concurrency executor", metadata: ["success": .stringConvertible(executorTakeoverSuccess)])
         
         do {
-            try await configureDB(app)
+            try await configureDB(app, config)
             switch migration {
             case .migrate: try await app.autoMigrate()
             case .revert: try await app.autoRevert()

@@ -3,15 +3,8 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 
-public func configureDB(_ app: Application) async throws {
-    app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
-        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
-        username: Environment.get("DATABASE_USERNAME") ?? "zokadictionary",
-        password: Environment.get("DATABASE_PASSWORD") ?? "zokadictionary",
-        database: Environment.get("DATABASE_NAME") ?? "zokadictionary",
-        tls: .prefer(try .init(configuration: .clientDefault)))
-    ), as: .psql)
+public func configureDB(_ app: Application, _ config: AppConfig) async throws {
+    app.databases.use(DatabaseConfigurationFactory.postgres(configuration: try .init(url: config.databaseURL.absoluteString)),as: .psql)
 
     app.migrations.add(CreateWord())
     app.migrations.add(CreateReference())
