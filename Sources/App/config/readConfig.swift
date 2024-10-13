@@ -33,7 +33,7 @@ public enum ReadAppConfigError: Error, CustomStringConvertible {
     case fileTooLarge
     case unableToReadFileContents
     
-    var description: String {
+    public var description: String {
         switch self {
         case .fileDoesNotExist(let filePath): "Unable to locate config file at \(filePath.string)"
         case .fileTooLarge: "Config file exceeds maximum size of 1MiB"
