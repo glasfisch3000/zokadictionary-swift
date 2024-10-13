@@ -4,8 +4,18 @@ import FluentPostgresDriver
 import Vapor
 
 public func configureDB(_ app: Application, _ config: AppConfig) async throws {
-    app.databases.use(DatabaseConfigurationFactory.postgres(configuration: try .init(url: config.databaseURL.absoluteString)),as: .psql)
-
+    app.databases.use(
+        .postgres(
+            configuration: .init(
+                hostname: config.database.host,
+                port: Int(config.database.port),
+                username: config.database.user,
+                password: config.database.password,
+                database: config.database.database
+            )
+        ), as: .psql
+    )
+    
     app.migrations.add(CreateWord())
     app.migrations.add(CreateReference())
     app.migrations.add(CreateTranslation())
