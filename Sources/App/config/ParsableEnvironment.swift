@@ -1,7 +1,7 @@
 import ArgumentParser
 import Vapor
 
-enum ParsableEnvironment: String, ExpressibleByArgument {
+enum ParsableEnvironment: String, Codable, ExpressibleByArgument {
     case production
     case development
     case testing

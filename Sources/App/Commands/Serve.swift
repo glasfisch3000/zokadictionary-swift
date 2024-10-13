@@ -23,7 +23,7 @@ struct Serve: AsyncParsableCommand {
     }
     
     @ArgumentParser.Option(name: [.short, .customLong("env")])
-    private var environment: ParsableEnvironment = .development
+    private var environment: ParsableEnvironment?
     
     @ArgumentParser.Option(name: .shortAndLong)
     private var configFile: FilePath?
@@ -42,6 +42,7 @@ struct Serve: AsyncParsableCommand {
     func run() async throws {
         let config = try await readAppConfig(path: configFile)
         
+        let environment = self.environment ?? config.environment
         var env = environment.makeEnvironment()
         env.commandInput.arguments = ["serve"]
         
