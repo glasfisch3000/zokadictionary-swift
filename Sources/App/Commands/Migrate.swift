@@ -5,7 +5,7 @@ import NIOFileSystem
 struct Migrate: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "migrate",
-//        abstract: <#T##String#>,
+        abstract: "Run or revert database migrations.",
 //        usage: <#T##String?#>,
 //        discussion: <#T##String#>,
         version: "0.0.0",

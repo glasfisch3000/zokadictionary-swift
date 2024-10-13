@@ -5,7 +5,7 @@ import NIOFileSystem
 struct Serve: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "serve",
-//        abstract: <#T##String#>,
+        abstract: "Start running the zokadictionary server.",
 //        usage: <#T##String?#>,
 //        discussion: <#T##String#>,
         version: "0.0.0",
