@@ -16,7 +16,11 @@ struct WordController: RouteCollection {
 
     @Sendable
     func getAll(req: Request) async throws -> [WordDTO] {
-        try await Word.query(on: req.db).all().map { $0.toDTO() }
+        try await Word.query(on: req.db)
+            .with(\.$references)
+            .with(\.$translations)
+            .all()
+            .map { $0.toDTO() }
     }
     
     @Sendable
@@ -39,7 +43,7 @@ struct WordController: RouteCollection {
         let word = wordDTO.toModel()
         try await word.save(on: req.db)
         
-        try await word.$references.$pivots.create(wordDTO.references.map { $0.toModel() }, on: req.db)
+        try await word.$references.create(wordDTO.references.map { $0.toModel() }, on: req.db)
         try await word.$translations.create(wordDTO.translations.map { $0.toModel() }, on: req.db)
         
         return word.toDTO()

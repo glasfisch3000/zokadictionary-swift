@@ -58,9 +58,12 @@ struct WordsGet: AsyncParsableCommand {
         }
         
         let word = try await Word.find(wordID, on: app.db)
+        try await word?.$references.load(on: app.db)
+        try await word?.$translations.load(on: app.db)
+        
         try await app.asyncShutdown()
         
-        if let word = word {
+        if let word = word?.toDTO() {
             switch outputFormat {
             case .json:
                 let encoder = JSONEncoder()

@@ -16,8 +16,8 @@ final class Word: Model, Sendable {
     @Enum(key: "type")
     var type: WordType
     
-    @Siblings(through: Reference.self, from: \.$source, to: \.$destination)
-    var references: [Word]
+    @Children(for: \.$source)
+    var references: [Reference]
     
     @Children(for: \.$word)
     var translations: [Translation]
@@ -36,7 +36,7 @@ final class Word: Model, Sendable {
                 string: self.string,
                 description: self.description,
                 type: self.type,
-                references: self.$references.pivots.map { $0.toDTO() },
+                references: self.references.map { $0.toDTO() },
                 translations: self.translations.map { $0.toDTO() })
     }
 }

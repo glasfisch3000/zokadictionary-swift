@@ -57,7 +57,13 @@ struct WordsList: AsyncParsableCommand {
             throw error
         }
         
-        let words = try await Word.query(on: app.db).range(lower: 0, upper: self.limit == 0 ? nil : Int(self.limit)).all()
+        let words = try await Word.query(on: app.db)
+            .range(lower: 0, upper: self.limit == 0 ? nil : Int(self.limit))
+            .with(\.$references)
+            .with(\.$translations)
+            .all()
+            .map { $0.toDTO() }
+        
         try await app.asyncShutdown()
         
         switch outputFormat {
