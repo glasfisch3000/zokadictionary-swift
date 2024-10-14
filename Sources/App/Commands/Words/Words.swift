@@ -10,7 +10,7 @@ struct Words: AsyncParsableCommand {
 //        discussion: <#T##String#>,
         version: "0.0.0",
         shouldDisplay: true,
-        subcommands: [WordsCreate.self, WordsList.self],
+        subcommands: [WordsList.self, WordsGet.self, WordsCreate.self, WordsDelete.self],
         groupedSubcommands: [],
         defaultSubcommand: nil,
         helpNames: .shortAndLong,
