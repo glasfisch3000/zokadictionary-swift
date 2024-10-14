@@ -1,4 +1,6 @@
-enum WordType: String, Sendable, Hashable, Codable {
+import ArgumentParser
+
+enum WordType: String, Sendable, Hashable, Codable, ExpressibleByArgument {
     case adjective
     case noun
     case number
