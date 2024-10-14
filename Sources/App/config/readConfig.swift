@@ -41,9 +41,3 @@ public enum ReadAppConfigError: Error, CustomStringConvertible {
         }
     }
 }
-
-extension FilePath: @retroactive ExpressibleByArgument {
-    public init?(argument: String) {
-        self.init(argument)
-    }
-}
