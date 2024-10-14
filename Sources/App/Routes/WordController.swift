@@ -34,9 +34,14 @@ struct WordController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> WordDTO {
-        let word = try req.content.decode(WordDTO.self).toModel()
-
+        let wordDTO = try req.content.decode(WordDTO.self)
+        
+        let word = wordDTO.toModel()
         try await word.save(on: req.db)
+        
+        try await word.$references.$pivots.create(wordDTO.references.map { $0.toModel() }, on: req.db)
+        try await word.$translations.create(wordDTO.translations.map { $0.toModel() }, on: req.db)
+        
         return word.toDTO()
     }
 

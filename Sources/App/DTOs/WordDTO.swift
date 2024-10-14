@@ -14,8 +14,6 @@ struct WordDTO: Hashable, Sendable, Content {
         Word(id: self.id,
              string: self.string,
              description: self.description,
-             type: self.type,
-             references: self.references.map { $0.toModel() },
-             translations: self.translations.map { $0.toModel() })
+             type: self.type)
     }
 }

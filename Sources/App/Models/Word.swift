@@ -13,7 +13,7 @@ final class Word: Model, Sendable {
     @Field(key: "description")
     var description: String?
     
-    @Field(key: "type")
+    @Enum(key: "type")
     var type: WordType
     
     @Siblings(through: Reference.self, from: \.$source, to: \.$destination)
@@ -24,13 +24,11 @@ final class Word: Model, Sendable {
     
     init() { }
 
-    init(id: UUID? = nil, string: String, description: String? = nil, type: WordType, references: [Reference], translations: [Translation]) {
+    init(id: UUID? = nil, string: String, description: String? = nil, type: WordType) {
         self.id = id
         self.string = string
         self.description = description
         self.type = type
-        self.$references.pivots = references
-        self.translations = translations
     }
     
     func toDTO() -> WordDTO {
