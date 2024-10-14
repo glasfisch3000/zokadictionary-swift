@@ -9,8 +9,10 @@ struct Zokadictionary: AsyncParsableCommand {
 //        discussion: <#T##String#>,
         version: "0.0.0",
         shouldDisplay: true,
-        subcommands: [Serve.self],
-        groupedSubcommands: [],
+        subcommands: [Serve.self, Routes.self, Migrate.self],
+        groupedSubcommands: [
+            CommandGroup(name: "Database manipulation", subcommands: [Words.self])
+        ],
         defaultSubcommand: Serve.self,
         helpNames: .shortAndLong,
         aliases: []
