@@ -1,6 +1,7 @@
 import ArgumentParser
 import Yams
 import Vapor
+import Fluent
 import NIOFileSystem
 
 struct WordsList: AsyncParsableCommand {
@@ -30,6 +31,9 @@ struct WordsList: AsyncParsableCommand {
     @ArgumentParser.Option(name: [.customShort("f"), .customLong("format")])
     private var outputFormat: OutputFormat = .yaml
     
+    @ArgumentParser.Option(name: .shortAndLong)
+    private var search: String?
+    
     init() { }
     
     func run() async throws {
@@ -57,7 +61,13 @@ struct WordsList: AsyncParsableCommand {
             throw error
         }
         
-        let words = try await Word.query(on: app.db)
+        var query = Word.query(on: app.db)
+        
+        if let search = search {
+            query = query.filter(\.$string =~ search)
+        }
+        
+        let words = try await query
             .range(lower: 0, upper: self.limit == 0 ? nil : Int(self.limit))
             .with(\.$references)
             .with(\.$translations)
