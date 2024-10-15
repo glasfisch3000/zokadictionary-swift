@@ -11,7 +11,7 @@ struct Zokadictionary: AsyncParsableCommand {
         shouldDisplay: true,
         subcommands: [Serve.self, Routes.self, Migrate.self],
         groupedSubcommands: [
-            CommandGroup(name: "Database manipulation", subcommands: [Words.self, References.self])
+            CommandGroup(name: "Database manipulation", subcommands: [Words.self, References.self, Translations.self])
         ],
         defaultSubcommand: Serve.self,
         helpNames: .shortAndLong,
