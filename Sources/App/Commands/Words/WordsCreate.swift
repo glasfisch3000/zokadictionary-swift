@@ -65,13 +65,11 @@ struct WordsCreate: AsyncParsableCommand {
             throw error
         }
         
-        try await app.startup()
-        
         let word = Word(id: nil, string: self.word.string, description: self.word.description, type: self.word.type)
         try await word.create(on: app.db)
         
         try await app.asyncShutdown()
         
-        print("created word \(word.id!)")
+        print("created word \(try word.requireID())")
     }
 }
