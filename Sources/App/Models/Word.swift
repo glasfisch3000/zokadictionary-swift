@@ -31,6 +31,13 @@ final class Word: Model, Sendable {
         self.type = type
     }
     
+    init(dto: WordDTO) {
+        self.id = dto.id
+        self.string = dto.string
+        self.description = dto.description
+        self.type = dto.type
+    }
+    
     func toDTO() -> WordDTO {
         WordDTO(id: self.id,
                 string: self.string,

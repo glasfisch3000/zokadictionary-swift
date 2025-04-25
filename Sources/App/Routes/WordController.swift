@@ -3,15 +3,22 @@ import Vapor
 
 struct WordController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let words = routes.grouped("words")
-
+        let authenticated = routes.grouped(AuthMiddleware(requiresMaintainer: false))
+        authenticated.get("checkauth", use: authenticate(req:))
+        
+        let words = authenticated.grouped("words")
         words.get(use: self.getAll(req:))
-        words.post(use: self.create(req:))
+        words.grouped(AuthMiddleware(requiresMaintainer: true)).post(use: self.create(req:))
         
         words.group(":wordID") { word in
             word.get(use: self.get(req:))
-            word.delete(use: self.delete(req:))
+            word.grouped(AuthMiddleware(requiresMaintainer: true)).delete(use: self.delete(req:))
         }
+    }
+    
+    @Sendable
+    func authenticate(req: Request) -> Bool {
+        return true
     }
 
     @Sendable
@@ -40,11 +47,11 @@ struct WordController: RouteCollection {
     func create(req: Request) async throws -> WordDTO {
         let wordDTO = try req.content.decode(WordDTO.self)
         
-        let word = wordDTO.toModel()
+        let word = Word(dto: wordDTO)
         try await word.save(on: req.db)
         
-        try await word.$references.create(wordDTO.references.map { $0.toModel() }, on: req.db)
-        try await word.$translations.create(wordDTO.translations.map { $0.toModel() }, on: req.db)
+        try await word.$references.create(wordDTO.references.map(Reference.init(dto:)), on: req.db)
+        try await word.$translations.create(wordDTO.translations.map(Translation.init(dto:)), on: req.db)
         
         return word.toDTO()
     }

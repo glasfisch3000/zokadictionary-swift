@@ -25,6 +25,13 @@ final class Reference: Model, Sendable {
         self.comment = comment
     }
     
+    init(dto: ReferenceDTO) {
+        self.id = dto.id
+        self.comment = dto.comment
+        if let sourceID = dto.sourceID { self.$source.id = sourceID }
+        self.$destination.id = dto.destinationID
+    }
+    
     func toDTO() -> ReferenceDTO {
         ReferenceDTO(id: self.id,
                      sourceID: self.$source.id,

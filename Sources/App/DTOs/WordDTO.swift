@@ -9,11 +9,4 @@ struct WordDTO: Hashable, Sendable, Content {
     
     var references: [ReferenceDTO]
     var translations: [TranslationDTO]
-
-    func toModel() -> Word {
-        Word(id: self.id,
-             string: self.string,
-             description: self.description,
-             type: self.type)
-    }
 }

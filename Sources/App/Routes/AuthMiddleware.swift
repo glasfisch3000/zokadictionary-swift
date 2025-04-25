@@ -1,7 +1,39 @@
 import Vapor
+import Fluent
 
 struct AuthMiddleware: AsyncRequestAuthenticator {
-    func authenticate(request: Request) async throws {
-        
+    var requiresMaintainer: Bool
+    
+    init(requiresMaintainer: Bool) {
+        self.requiresMaintainer = requiresMaintainer
     }
+    
+    func authenticate(request: Request) async throws(AuthenticationError) {
+        guard let auth = request.headers.basicAuthorization else {
+            throw .missing
+        }
+        
+        guard let user = try? await User.query(on: request.db)
+            .filter(\.$name == auth.username)
+            .first() else {
+            throw .invalid
+        }
+        
+        if self.requiresMaintainer {
+            switch user.type {
+            case .viewer: throw .disallowed
+            case .maintainer: break
+            }
+        }
+        
+        guard user.password == User.hashPassword(auth.password, salt: user.salt) else {
+            throw .invalid
+        }
+    }
+}
+
+enum AuthenticationError: Error {
+    case missing
+    case invalid
+    case disallowed
 }

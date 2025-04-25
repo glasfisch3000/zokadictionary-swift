@@ -6,11 +6,4 @@ struct TranslationDTO: Hashable, Sendable, Content {
     var wordID: Word.IDValue?
     var translation: String
     var comment: String?
-
-    func toModel() -> Translation {
-        Translation(id: self.id,
-                    translation: self.translation,
-                    comment: self.comment,
-                    wordID: self.wordID)
-    }
 }

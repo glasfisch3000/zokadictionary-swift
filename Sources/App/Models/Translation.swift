@@ -25,6 +25,13 @@ final class Translation: Model, Sendable {
         if let wordID = wordID { self.$word.id = wordID }
     }
     
+    init(dto: TranslationDTO) {
+        self.id = dto.id
+        self.translation = dto.translation
+        self.comment = dto.comment
+        if let wordID = dto.wordID { self.$word.id = wordID }
+    }
+    
     func toDTO() -> TranslationDTO {
         TranslationDTO(id: self.id,
                        wordID: self.$word.id,

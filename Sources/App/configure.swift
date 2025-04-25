@@ -19,6 +19,7 @@ public func configureDB(_ app: Application, _ config: AppConfig) async throws {
     app.migrations.add(CreateWord())
     app.migrations.add(CreateReference())
     app.migrations.add(CreateTranslation())
+    app.migrations.add(CreateUser())
 }
 
 func configureRoutes(_ app: Application) throws {
