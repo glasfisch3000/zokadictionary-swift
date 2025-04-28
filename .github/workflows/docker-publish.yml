@@ -61,6 +61,10 @@ jobs:
             -Xlinker -ljemalloc \
             $([ -f ./Package.resolved ] && echo "--force-resolved-versions" || true)
 
+          pwd
+          swift build -c release --show-bin-path
+          ls -lA $(swift build -c release --show-bin-path)
+
       # Cache Swift build artifacts
       - name: Cache .build
         if: steps.restore-build.outputs.cache-hit != 'true'
