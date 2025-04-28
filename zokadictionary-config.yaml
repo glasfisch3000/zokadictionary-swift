@@ -1,0 +1,6 @@
+database:
+    host: db
+    port: 5432
+    user: zokadictionary
+    password: Nunvuh-semba3-qibmof
+    database: zokadictionary
