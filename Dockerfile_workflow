@@ -15,8 +15,6 @@ WORKDIR /staging
 # Copy entire repo into container
 COPY . .
 
-RUN pwd && ls -lA && swift build -c release --show-bin-path && ls -lA $(swift build -c release --show-bin-path)
-
 # Copy main executable to staging area
 RUN cp "$(swift build -c release --show-bin-path)/App" ./
 
