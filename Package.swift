@@ -1,10 +1,13 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.1
 import PackageDescription
 
 let package = Package(
     name: "zokadictionary",
     platforms: [
        .macOS(.v13),
+    ],
+    products: [
+        .executable(name: "App", targets: ["zokadictionary"]),
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.99.3"),
@@ -16,7 +19,7 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "App",
+            name: "zokadictionary",
             dependencies: [
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
@@ -24,13 +27,7 @@ let package = Package(
                 .product(name: "_NIOFileSystem", package: "swift-nio"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Yams", package: "Yams"),
-            ],
-            swiftSettings: swiftSettings
+            ]
         ),
     ]
 )
-
-var swiftSettings: [SwiftSetting] { [
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableExperimentalFeature("StrictConcurrency"),
-] }
