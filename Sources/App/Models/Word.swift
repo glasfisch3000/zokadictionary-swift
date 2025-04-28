@@ -1,7 +1,7 @@
 import Fluent
 import struct Foundation.UUID
 
-final class Word: Model, Sendable {
+final class Word: Model, @unchecked Sendable {
     static let schema = "words"
     
     @ID(key: .id)

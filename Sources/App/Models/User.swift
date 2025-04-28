@@ -3,7 +3,7 @@ import struct Foundation.Data
 import struct Foundation.UUID
 import Crypto
 
-final class User: Model, Sendable {
+final class User: Model, @unchecked Sendable {
     static let schema = "users"
     
     @ID(key: .id)

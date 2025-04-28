@@ -1,7 +1,7 @@
 import Fluent
 import struct Foundation.UUID
 
-final class Reference: Model, Sendable {
+final class Reference: Model, @unchecked Sendable {
     static let schema = "references"
     
     @ID(key: .id)
