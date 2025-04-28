@@ -26,6 +26,9 @@ struct Migrate: AsyncParsableCommand {
     @ArgumentParser.Flag(name: .long)
     private var revert: Bool = false
     
+    @ArgumentParser.Flag(name: .long)
+    private var yes: Bool = false
+    
     init() { }
     
     func run() async throws {
@@ -33,7 +36,9 @@ struct Migrate: AsyncParsableCommand {
         
         let environment = self.environment ?? config.environment
         var env = environment.makeEnvironment()
-        env.commandInput.arguments = ["migrate"] + (revert ? ["--revert"] : [])
+        env.commandInput.arguments = ["migrate"]
+        if self.revert { env.commandInput.arguments.append("--revert") }
+        if self.yes { env.commandInput.arguments.append("--yes") }
         
         try LoggingSystem.bootstrap(from: &env)
         let app = try await Application.make(env)
