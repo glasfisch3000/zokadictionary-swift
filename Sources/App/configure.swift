@@ -30,7 +30,7 @@ func configureRoutes(_ app: Application) throws {
         "It works!"
     }
 
-    try app
+    try app.grouped("api")
         .grouped(ErrorMiddleware())
         .register(collection: WordController())
 }
