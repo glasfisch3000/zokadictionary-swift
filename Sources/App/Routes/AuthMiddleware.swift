@@ -33,7 +33,7 @@ struct AuthMiddleware: AsyncRequestAuthenticator {
 }
 
 enum AuthenticationError: String, Error, Encodable {
-    case missing
-    case invalid
+    case missing = "missingAuthentication"
+    case invalid = "invalidAuthentication"
     case disallowed
 }
