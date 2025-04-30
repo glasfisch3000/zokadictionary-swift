@@ -29,4 +29,7 @@ RUN find -L "$(swift build -c release --show-bin-path)/" -regex '.*\.resources$'
 RUN [ -d /build/Public ] && { chmod -R a-w ./Public; } || true
 RUN [ -d /build/Resources ] && { chmod -R a-w ./Resources; } || true
 
+# remove unnecessary build artifacts
+RUN swift package clean
+
 ENTRYPOINT ["./App"]
