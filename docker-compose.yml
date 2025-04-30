@@ -23,18 +23,16 @@ networks:
 
 x-shared_environment: &shared_environment
   LOG_LEVEL: ${LOG_LEVEL:-debug}
-  
+
 services:
   app:
-    image: zokadictionary-swift:latest
-    build:
-      context: .
+    image: ghcr.io/glasfisch3000/zokadictionary-swift:main
     environment:
       <<: *shared_environment
     depends_on:
       - db
     ports:
-      - '8080:8080'
+      - '2718:8080'
     volumes:
       - type: bind
         source: ./zokadictionary-swift/config.yaml
@@ -44,9 +42,7 @@ services:
     # user: '0' # uncomment to run as root for testing purposes even though Dockerfile defines 'vapor' user.
     command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080", "--config-file", "/app/zokadictionary-config.yaml"]
   migrate:
-    image: zokadictionary-swift:latest
-    build:
-      context: .
+    image: ghcr.io/glasfisch3000/zokadictionary-swift:main
     environment:
       <<: *shared_environment
     depends_on:
@@ -61,9 +57,7 @@ services:
     networks:
       - zokadictionary
   revert:
-    image: zokadictionary-swift:latest
-    build:
-      context: .
+    image: ghcr.io/glasfisch3000/zokadictionary-swift:main
     environment:
       <<: *shared_environment
     depends_on:
