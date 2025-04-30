@@ -23,12 +23,12 @@ final class User: Model, @unchecked Sendable {
     
     init() { }
 
-    init(id: UUID? = nil, name: String, type: UserType, salt: UUID, password: Data) {
+    init(id: UUID? = nil, name: String, type: UserType, salt: UUID = UUID(), password: String) {
         self.id = id
         self.name = name
         self.type = type
         self.salt = salt
-        self.password = password
+        self.password = Self.hashPassword(password, salt: salt)
     }
     
     func toDTO() -> UserDTO {
