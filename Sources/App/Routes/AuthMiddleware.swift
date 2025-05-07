@@ -32,8 +32,18 @@ struct AuthMiddleware: AsyncRequestAuthenticator {
     }
 }
 
-enum AuthenticationError: String, Error, Encodable {
+enum AuthenticationError: String, APIError {
     case missing = "missingAuthentication"
     case invalid = "invalidAuthentication"
     case disallowed
+    
+    var errorCode: Self { self }
+    var errorDescription: String? { nil }
+    
+    var httpStatus: HTTPResponseStatus {
+        switch self {
+        case .missing, .invalid: .unauthorized
+        case .disallowed: .forbidden
+        }
+    }
 }

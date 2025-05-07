@@ -1,24 +1,16 @@
 import Fluent
 import Vapor
+import PostgresNIO
 
 struct WordController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let authenticated = routes.grouped(AuthMiddleware(requiresMaintainer: false))
-        authenticated.get("checkauth", use: authenticate(req:))
+        routes.get(use: self.getAll(req:))
+        routes.grouped(AuthMiddleware(requiresMaintainer: true)).post(use: self.create(req:))
         
-        let words = authenticated.grouped("words")
-        words.get(use: self.getAll(req:))
-        words.grouped(AuthMiddleware(requiresMaintainer: true)).post(use: self.create(req:))
-        
-        words.group(":wordID") { word in
+        routes.group(":wordID") { word in
             word.get(use: self.get(req:))
             word.grouped(AuthMiddleware(requiresMaintainer: true)).delete(use: self.delete(req:))
         }
-    }
-    
-    @Sendable
-    func authenticate(req: Request) -> Bool {
-        return true
     }
 
     @Sendable
@@ -33,11 +25,11 @@ struct WordController: RouteCollection {
     @Sendable
     func get(req: Request) async throws -> WordDTO {
         guard let id = req.parameters.get("wordID", as: UUID.self) else {
-            throw Abort(.badRequest, reason: "missing word id")
+            throw RequestError.missingQueryProperty("word id")
         }
         
         guard let word = try await Word.find(id, on: req.db) else {
-            throw Abort(.notFound)
+            throw RequestError.requestedModelNotFound(id, type: "word")
         }
         
         return word.toDTO()
@@ -57,12 +49,16 @@ struct WordController: RouteCollection {
     }
 
     @Sendable
-    func delete(req: Request) async throws -> HTTPStatus {
-        guard let word = try await Word.find(req.parameters.get("wordID"), on: req.db) else {
-            throw Abort(.notFound)
+    func delete(req: Request) async throws -> WordDTO {
+        guard let id = req.parameters.get("wordID", as: UUID.self) else {
+            throw RequestError.missingQueryProperty("word id")
+        }
+        
+        guard let word = try await Word.find(id, on: req.db) else {
+            throw RequestError.requestedModelNotFound(id, type: "word")
         }
 
         try await word.delete(on: req.db)
-        return .ok
+        return word.toDTO()
     }
 }

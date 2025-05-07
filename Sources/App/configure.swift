@@ -31,7 +31,17 @@ func configureRoutes(_ app: Application) throws {
         "It works!"
     }
 
-    try app.grouped("api")
+    let authenticated = app.grouped("api")
         .grouped(ErrorMiddleware())
-        .register(collection: WordController())
+        .grouped(AuthMiddleware(requiresMaintainer: false))
+    
+    @Sendable
+    func authenticate(req: Request) -> Bool {
+        return true
+    }
+        
+    authenticated.get("checkauth", use: authenticate(req:))
+    try authenticated.grouped("words").register(collection: WordController())
+    try authenticated.grouped("translations").register(collection: TranslationsController())
+    try authenticated.grouped("references").register(collection: ReferencesController())
 }
