@@ -15,8 +15,14 @@ struct TranslationsController: RouteCollection {
 
     @Sendable
     func getAll(req: Request) async throws -> [TranslationDTO] {
-        try await Translation.query(on: req.db)
+        var query = Translation.query(on: req.db)
             .with(\.$word)
+        
+        if let wordID = req.query[UUID.self, at: "wordID"] {
+            query = query.filter(\.$word.$id == wordID)
+        }
+        
+        return try await query
             .all()
             .map { $0.toDTO() }
     }

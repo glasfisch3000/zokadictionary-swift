@@ -15,9 +15,19 @@ struct ReferencesController: RouteCollection {
 
     @Sendable
     func getAll(req: Request) async throws -> [ReferenceDTO] {
-        try await Reference.query(on: req.db)
+        var query = Reference.query(on: req.db)
             .with(\.$source)
             .with(\.$destination)
+        
+        if let sourceID = req.query[UUID.self, at: "sourceID"] {
+            query = query.filter(\.$source.$id == sourceID)
+        }
+        
+        if let destinationID = req.query[UUID.self, at: "destinationID"] {
+            query = query.filter(\.$destination.$id == destinationID)
+        }
+        
+        return try await query
             .all()
             .map { $0.toDTO() }
     }
