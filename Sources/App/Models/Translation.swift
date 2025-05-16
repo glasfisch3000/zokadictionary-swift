@@ -29,7 +29,7 @@ final class Translation: Model, @unchecked Sendable {
         self.id = dto.id
         self.translation = dto.translation
         self.comment = dto.comment
-        if let wordID = dto.wordID { self.$word.id = wordID }
+        self.$word.id = dto.wordID
     }
     
     func toDTO() -> TranslationDTO {

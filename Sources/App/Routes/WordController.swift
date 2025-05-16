@@ -9,7 +9,10 @@ struct WordController: RouteCollection {
         
         routes.group(":wordID") { word in
             word.get(use: self.get(req:))
-            word.grouped(AuthMiddleware(requiresMaintainer: true)).delete(use: self.delete(req:))
+            
+            let authWord = word.grouped(AuthMiddleware(requiresMaintainer: true))
+            authWord.put(use: self.update(req:))
+            authWord.delete(use: self.delete(req:))
         }
     }
 
@@ -37,13 +40,89 @@ struct WordController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> WordDTO {
-        let wordDTO = try req.content.decode(WordDTO.self)
+        var body = try await req.body.collect(upTo: 1_000_000)
+        guard let wordDTO = try? body.readJSONDecodable(WordDTO.self, length: body.readableBytes) else {
+            throw RequestError.unableToDecodeBody(type: "word")
+        }
         
         let word = Word(dto: wordDTO)
         try await word.save(on: req.db)
         
         try await word.$references.create(wordDTO.references.map(Reference.init(dto:)), on: req.db)
         try await word.$translations.create(wordDTO.translations.map(Translation.init(dto:)), on: req.db)
+        
+        return word.toDTO()
+    }
+    
+    @Sendable
+    func update(req: Request) async throws -> WordDTO {
+        guard let id = req.parameters.get("wordID", as: UUID.self) else {
+            throw RequestError.missingQueryProperty("word id")
+        }
+        
+        guard let word = try await Word.find(id, on: req.db) else {
+            throw RequestError.requestedModelNotFound(id, type: "word")
+        }
+        
+        struct Container: Decodable {
+            var string: String
+            var description: String?
+            var type: WordType
+            
+            var removedTranslations: [Translation.IDValue]
+            var editedTranslations: [TranslationDTO.Explicit]
+            var addedTranslations: [TranslationDTO]
+            
+            var removedReferences: [Translation.IDValue]
+            var editedReferences: [ReferenceDTO.Explicit]
+            var addedReferences: [ReferenceDTO]
+        }
+        
+        var body = try await req.body.collect(upTo: 1_000_000)
+        guard let container = try? body.readJSONDecodable(Container.self, length: body.readableBytes) else {
+            throw RequestError.unableToDecodeBody(type: "word")
+        }
+        
+        try await req.db.transaction { database in
+            try await Word.query(on: database)
+                .set(\.$string, to: container.string)
+                .set(\.$description, to: container.description)
+                .set(\.$type, to: container.type)
+                .update()
+            
+            try await Translation.query(on: database)
+                .filter(\.$id ~~ container.removedTranslations)
+                .delete()
+            try await Reference.query(on: database)
+                .filter(\.$id ~~ container.removedReferences)
+                .delete()
+            
+            for translation in container.addedTranslations {
+                try await Translation(dto: translation).create(on: database)
+            }
+            
+            for translation in container.editedTranslations {
+                try await Translation.query(on: database)
+                    .filter(\.$id == translation.id)
+                    .set(\.$word.$id, to: translation.wordID)
+                    .set(\.$translation, to: translation.translation)
+                    .set(\.$comment, to: translation.comment)
+                    .update()
+            }
+            
+            for reference in container.addedReferences {
+                try await Reference(dto: reference).create(on: database)
+            }
+            
+            for reference in container.editedReferences {
+                try await Reference.query(on: database)
+                    .filter(\.$id == reference.id)
+                    .set(\.$source.$id, to: reference.sourceID)
+                    .set(\.$destination.$id, to: reference.destinationID)
+                    .set(\.$comment, to: reference.comment)
+                    .update()
+            }
+        }
         
         return word.toDTO()
     }

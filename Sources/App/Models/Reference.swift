@@ -28,7 +28,7 @@ final class Reference: Model, @unchecked Sendable {
     init(dto: ReferenceDTO) {
         self.id = dto.id
         self.comment = dto.comment
-        if let sourceID = dto.sourceID { self.$source.id = sourceID }
+        self.$source.id = dto.sourceID
         self.$destination.id = dto.destinationID
     }
     
