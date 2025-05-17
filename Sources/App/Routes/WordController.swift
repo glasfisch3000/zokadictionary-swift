@@ -83,12 +83,11 @@ struct WordController: RouteCollection {
             throw RequestError.unableToDecodeBody(type: "word")
         }
         
-        try await req.db.transaction { database in
-            try await Word.query(on: database)
-                .set(\.$string, to: container.string)
-                .set(\.$description, to: container.description)
-                .set(\.$type, to: container.type)
-                .update()
+        return try await req.db.transaction { database in
+			word.string = container.string
+			word.description = container.description
+			word.type = container.type
+			try await word.update(on: database)
             
             try await Translation.query(on: database)
                 .filter(\.$id ~~ container.removedTranslations)
@@ -122,9 +121,9 @@ struct WordController: RouteCollection {
                     .set(\.$comment, to: reference.comment)
                     .update()
             }
-        }
-        
-        return word.toDTO()
+			
+			return word.toDTO()
+		}
     }
 
     @Sendable
