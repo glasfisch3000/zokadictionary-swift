@@ -48,8 +48,12 @@ struct WordController: RouteCollection {
         let word = Word(dto: wordDTO)
         try await word.save(on: req.db)
         
-        try await word.$references.create(wordDTO.references.map(Reference.init(dto:)), on: req.db)
-        try await word.$translations.create(wordDTO.translations.map(Translation.init(dto:)), on: req.db)
+		if let references = wordDTO.references {
+			try await word.$references.create(references.map(Reference.init(dto:)), on: req.db)
+		}
+		if let translations = wordDTO.translations {
+			try await word.$translations.create(translations.map(Translation.init(dto:)), on: req.db)
+		}
         
         return word.toDTO()
     }
