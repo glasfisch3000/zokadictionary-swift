@@ -11,7 +11,7 @@ struct WordController: RouteCollection {
             word.get(use: self.get(req:))
             
             let authWord = word.grouped(AuthMiddleware(requiresMaintainer: true))
-            authWord.put(use: self.update(req:))
+            authWord.patch(use: self.update(req:))
             authWord.delete(use: self.delete(req:))
         }
     }
