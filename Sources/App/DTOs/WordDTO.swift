@@ -7,6 +7,6 @@ struct WordDTO: Hashable, Sendable, Content {
     var description: String?
     var type: WordType
     
-    var references: [ReferenceDTO]
-    var translations: [TranslationDTO]
+    var references: [ReferenceDTO]?
+    var translations: [TranslationDTO]?
 }

@@ -43,7 +43,7 @@ final class Word: Model, @unchecked Sendable {
                 string: self.string,
                 description: self.description,
                 type: self.type,
-                references: self.references.map { $0.toDTO() },
-                translations: self.translations.map { $0.toDTO() })
+				references: self.$references.value?.map { $0.toDTO() },
+				translations: self.$translations.value?.map { $0.toDTO() })
     }
 }
