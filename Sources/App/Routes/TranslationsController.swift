@@ -21,6 +21,11 @@ struct TranslationsController: RouteCollection {
         if let wordID = req.query[UUID.self, at: "wordID"] {
             query = query.filter(\.$word.$id == wordID)
         }
+		
+		if let deleted = req.query[Bool.self, at: "deleted"], deleted {
+			query = query.withDeleted()
+				.filter(\.$deleted != nil)
+		}
         
         return try await query
             .all()

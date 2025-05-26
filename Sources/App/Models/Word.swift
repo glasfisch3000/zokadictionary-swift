@@ -1,5 +1,5 @@
 import Fluent
-import struct Foundation.UUID
+import Foundation
 
 final class Word: Model, @unchecked Sendable {
     static let schema = "words"
@@ -21,6 +21,9 @@ final class Word: Model, @unchecked Sendable {
     
     @Children(for: \.$word)
     var translations: [Translation]
+	
+	@Timestamp(key: "deleted_at", on: .delete)
+	var deleted: Date?
     
     init() { }
 
@@ -43,6 +46,7 @@ final class Word: Model, @unchecked Sendable {
                 string: self.string,
                 description: self.description,
                 type: self.type,
+				deleted: self.deleted,
 				references: self.$references.value?.map { $0.toDTO() },
 				translations: self.$translations.value?.map { $0.toDTO() })
     }

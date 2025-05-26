@@ -26,6 +26,11 @@ struct ReferencesController: RouteCollection {
         if let destinationID = req.query[UUID.self, at: "destinationID"] {
             query = query.filter(\.$destination.$id == destinationID)
         }
+		
+		if let deleted = req.query[Bool.self, at: "deleted"], deleted {
+			query = query.withDeleted()
+				.filter(\.$deleted != nil)
+		}
         
         return try await query
             .all()

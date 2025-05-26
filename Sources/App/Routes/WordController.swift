@@ -18,10 +18,17 @@ struct WordController: RouteCollection {
 
     @Sendable
     func getAll(req: Request) async throws -> [WordDTO] {
-        try await Word.query(on: req.db)
+		var query = Word.query(on: req.db)
             .with(\.$references)
             .with(\.$translations)
-            .all()
+		
+		if let deleted = req.query[Bool.self, at: "deleted"], deleted {
+			query = query.withDeleted()
+				.filter(\.$deleted != nil)
+		}
+		
+		return try await query
+			.all()
             .map { $0.toDTO() }
     }
     

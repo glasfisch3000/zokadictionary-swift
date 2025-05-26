@@ -1,5 +1,5 @@
 import Fluent
-import struct Foundation.UUID
+import Foundation
 
 final class Reference: Model, @unchecked Sendable {
     static let schema = "references"
@@ -15,6 +15,9 @@ final class Reference: Model, @unchecked Sendable {
     
     @Field(key: "comment")
     var comment: String?
+	
+	@Timestamp(key: "deleted_at", on: .delete)
+	var deleted: Date?
     
     init() { }
     
@@ -36,6 +39,7 @@ final class Reference: Model, @unchecked Sendable {
         ReferenceDTO(id: self.id,
                      sourceID: self.$source.id,
                      destinationID: self.$destination.id,
-                     comment: self.comment)
+                     comment: self.comment,
+					 deleted: self.deleted)
     }
 }
