@@ -12,7 +12,6 @@ struct TranslationsController: RouteCollection {
 			
             let authTranslation = translation.grouped(AuthMiddleware(requiresMaintainer: true))
 			authTranslation.delete(use: self.delete(req:))
-			authTranslation.put(use: self.restore(req:))
         }
     }
 
@@ -24,11 +23,6 @@ struct TranslationsController: RouteCollection {
         if let wordID = req.query[UUID.self, at: "wordID"] {
             query = query.filter(\.$word.$id == wordID)
         }
-		
-		if let deleted = req.query[Bool.self, at: "deleted"], deleted {
-			query = query.withDeleted()
-				.filter(\.$deleted != nil)
-		}
         
         return try await query
             .all()
@@ -71,18 +65,4 @@ struct TranslationsController: RouteCollection {
         try await translation.delete(on: req.db)
         return translation.toDTO()
     }
-	
-	@Sendable
-	func restore(req: Request) async throws -> TranslationDTO {
-		guard let id = req.parameters.get("translationID", as: UUID.self) else {
-			throw RequestError.missingQueryProperty("translation id")
-		}
-		
-		guard let translation = try await Translation.find(id, on: req.db) else {
-			throw RequestError.requestedModelNotFound(id, type: "translation")
-		}
-		
-		try await translation.restore(on: req.db)
-		return translation.toDTO()
-	}
 }

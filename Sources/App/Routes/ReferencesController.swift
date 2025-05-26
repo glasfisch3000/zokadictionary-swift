@@ -12,7 +12,6 @@ struct ReferencesController: RouteCollection {
             
 			let authReference = reference.grouped(AuthMiddleware(requiresMaintainer: true))
 			authReference.delete(use: self.delete(req:))
-			authReference.put(use: self.restore(req:))
         }
     }
 
@@ -29,11 +28,6 @@ struct ReferencesController: RouteCollection {
         if let destinationID = req.query[UUID.self, at: "destinationID"] {
             query = query.filter(\.$destination.$id == destinationID)
         }
-		
-		if let deleted = req.query[Bool.self, at: "deleted"], deleted {
-			query = query.withDeleted()
-				.filter(\.$deleted != nil)
-		}
         
         return try await query
             .all()
@@ -76,18 +70,4 @@ struct ReferencesController: RouteCollection {
         try await reference.delete(on: req.db)
         return reference.toDTO()
     }
-	
-	@Sendable
-	func restore(req: Request) async throws -> ReferenceDTO {
-		guard let id = req.parameters.get("referenceID", as: UUID.self) else {
-			throw RequestError.missingQueryProperty("reference id")
-		}
-		
-		guard let reference = try await Reference.find(id, on: req.db) else {
-			throw RequestError.requestedModelNotFound(id, type: "reference")
-		}
-		
-		try await reference.restore(on: req.db)
-		return reference.toDTO()
-	}
 }

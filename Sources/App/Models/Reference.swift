@@ -15,9 +15,6 @@ final class Reference: Model, @unchecked Sendable {
     
     @Field(key: "comment")
     var comment: String?
-	
-	@Timestamp(key: "deleted_at", on: .delete)
-	var deleted: Date?
     
     init() { }
     
@@ -39,7 +36,6 @@ final class Reference: Model, @unchecked Sendable {
         ReferenceDTO(id: self.id,
                      sourceID: self.$source.id,
                      destinationID: self.$destination.id,
-                     comment: self.comment,
-					 deleted: self.deleted)
+                     comment: self.comment)
     }
 }
