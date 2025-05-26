@@ -21,6 +21,7 @@ public func configureDB(_ app: Application, _ config: AppConfig) async throws {
     app.migrations.add(CreateTranslation())
     app.migrations.add(CreateUser())
     app.migrations.add(UniqueUsername())
+	app.migrations.add(AddSoftDelete())
 }
 
 func configureRoutes(_ app: Application) throws {

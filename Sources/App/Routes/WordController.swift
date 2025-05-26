@@ -13,6 +13,7 @@ struct WordController: RouteCollection {
             let authWord = word.grouped(AuthMiddleware(requiresMaintainer: true))
             authWord.patch(use: self.update(req:))
             authWord.delete(use: self.delete(req:))
+			authWord.put(use: self.restore(req:))
         }
     }
 
@@ -150,4 +151,18 @@ struct WordController: RouteCollection {
         try await word.delete(on: req.db)
         return word.toDTO()
     }
+	
+	@Sendable
+	func restore(req: Request) async throws -> WordDTO {
+		guard let id = req.parameters.get("wordID", as: UUID.self) else {
+			throw RequestError.missingQueryProperty("word id")
+		}
+		
+		guard let word = try await Word.find(id, on: req.db) else {
+			throw RequestError.requestedModelNotFound(id, type: "word")
+		}
+		
+		try await word.restore(on: req.db)
+		return word.toDTO()
+	}
 }
