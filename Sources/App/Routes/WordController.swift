@@ -22,11 +22,19 @@ struct WordController: RouteCollection {
 		var query = Word.query(on: req.db)
             .with(\.$references)
             .with(\.$translations)
+			.withDeleted()
 		
 		if let deleted = req.query[Bool.self, at: "deleted"], deleted {
 			query = query.withDeleted()
-				.filter(\.$deleted != nil)
 		}
+		
+		print(try await Word.query(on: req.db)
+			.withDeleted()
+			.with(\.$references)
+			.with(\.$translations)
+			.all()
+			.map { $0.toDTO() })
+		
 		
 		return try await query
 			.all()
@@ -39,7 +47,11 @@ struct WordController: RouteCollection {
             throw RequestError.missingQueryProperty("word id")
         }
         
-        guard let word = try await Word.find(id, on: req.db) else {
+		let query = Word.query(on: req.db)
+			.filter(\.$id == id)
+			.withDeleted()
+		
+		guard let word = try await query.first() else {
             throw RequestError.requestedModelNotFound(id, type: "word")
         }
         
@@ -72,9 +84,13 @@ struct WordController: RouteCollection {
             throw RequestError.missingQueryProperty("word id")
         }
         
-        guard let word = try await Word.find(id, on: req.db) else {
-            throw RequestError.requestedModelNotFound(id, type: "word")
-        }
+		let query = Word.query(on: req.db)
+			.filter(\.$id == id)
+			.withDeleted()
+		
+		guard let word = try await query.first() else {
+			throw RequestError.requestedModelNotFound(id, type: "word")
+		}
         
         struct Container: Decodable {
             var string: String
@@ -143,12 +159,18 @@ struct WordController: RouteCollection {
         guard let id = req.parameters.get("wordID", as: UUID.self) else {
             throw RequestError.missingQueryProperty("word id")
         }
+		
+		let force = try? req.query.get(Bool.self, at: "force")
         
-        guard let word = try await Word.find(id, on: req.db) else {
-            throw RequestError.requestedModelNotFound(id, type: "word")
-        }
+		let query = Word.query(on: req.db)
+			.filter(\.$id == id)
+			.withDeleted()
+		
+		guard let word = try await query.first() else {
+			throw RequestError.requestedModelNotFound(id, type: "word")
+		}
 
-        try await word.delete(on: req.db)
+        try await word.delete(force: force ?? false, on: req.db)
         return word.toDTO()
     }
 	
@@ -158,7 +180,11 @@ struct WordController: RouteCollection {
 			throw RequestError.missingQueryProperty("word id")
 		}
 		
-		guard let word = try await Word.find(id, on: req.db) else {
+		let query = Word.query(on: req.db)
+			.filter(\.$id == id)
+			.withDeleted()
+		
+		guard let word = try await query.first() else {
 			throw RequestError.requestedModelNotFound(id, type: "word")
 		}
 		
