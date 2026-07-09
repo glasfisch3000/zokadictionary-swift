@@ -36,7 +36,7 @@ services:
       - '2718:8080'
     volumes:
       - type: bind
-        source: ./zokadictionary-config.yaml
+        source: ./config.yaml
         target: /app/zokadictionary-config.yaml
     networks:
       - zokadictionary
@@ -54,7 +54,7 @@ services:
       replicas: 0
     volumes:
       - type: bind
-        source: ./zokadictionary-config.yaml
+        source: ./config.yaml
         target: /app/zokadictionary-config.yaml
     networks:
       - zokadictionary
@@ -70,7 +70,7 @@ services:
       replicas: 0
     volumes:
       - type: bind
-        source: ./zokadictionary-config.yaml
+        source: ./config.yaml
         target: /app/zokadictionary-config.yaml
     networks:
       - zokadictionary
@@ -83,7 +83,5 @@ services:
       POSTGRES_USER: zokadictionary
       POSTGRES_PASSWORD: zokadictionary
       POSTGRES_DB: zokadictionary
-    ports:
-      - '5432:5432'
     networks:
       - zokadictionary
