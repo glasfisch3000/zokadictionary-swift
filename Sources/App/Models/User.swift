@@ -39,10 +39,19 @@ final class User: Model, @unchecked Sendable {
                 password: self.password)
     }
     
+	// change to argon2 hashing
     static func hashPassword(_ password: String, salt: UUID) -> Data {
         var hasher = SHA256()
         hasher.update(data: Data(password.utf8))
         hasher.update(data: Data(salt.uuidString.utf8))
         return Data(hasher.finalize())
     }
+}
+
+extension User {
+	enum UserType: String, Sendable, Hashable, Codable {
+		case viewer
+		case contributor
+		case admin
+	}
 }

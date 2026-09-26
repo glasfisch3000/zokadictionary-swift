@@ -1,6 +1,0 @@
-database:
-    host: db
-    port: 5432
-    user: zokadictionary
-    password: zokadictionary
-    database: zokadictionary
