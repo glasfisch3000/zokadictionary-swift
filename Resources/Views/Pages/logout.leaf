@@ -1,0 +1,27 @@
+#extend("master"):
+	#export("head"):
+	#if(success):
+	<meta http-equiv="refresh" content="1;url=/"/>
+	#endif
+	#endexport
+	
+	#export("title"):
+	Logout
+	#endexport
+	
+	#export("body"):
+	#if(success):
+	<div class="panel success">
+		Logged out
+	</div>
+	#else:
+	<div class="panel">
+		<form id="logout-form" name="logout" method="post">
+			<section class="submit-section">
+				<input id="submit" class="submit-button" type="submit" value="Log Out" title="Log Out"/>
+			</section>
+		</form>
+	</div>
+	#endif
+	#endexport
+#endextend

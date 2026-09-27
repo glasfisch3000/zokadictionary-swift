@@ -47,6 +47,8 @@ func configureRoutes(_ app: Application) throws {
 	app.middleware.use(SessionAuthenticator())
 	
 	app.views.use(.leaf)
+	app.leaf.tags["path"] = PathTag()
+	
 	let fileMiddleware = FileMiddleware(publicDirectory: app.directory.publicDirectory, advancedETagComparison: true)
 	app.middleware.use(fileMiddleware)
     

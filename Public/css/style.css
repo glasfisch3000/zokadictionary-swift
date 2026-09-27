@@ -1,0 +1,96 @@
+:root {
+	color-scheme: dark;
+}
+
+@font-face {
+	font-family: SFPro;
+	src: url('/fonts/SF-Pro-Text-Regular_subset.otf');
+}
+
+body {
+	margin: 0px;
+	width: 100vw;
+	height: 100vh !important;
+	
+	color: #eee;
+	background: #111;
+	font-family: "Courier";
+}
+
+input, .submit-button {
+	border: 0.5px solid;
+	border-radius: 0.3em;
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+	padding-top: 0.35em;
+	padding-bottom: 0.35em;
+	
+	font-size: inherit;
+	font-family: inherit;
+	text-decoration: inherit;
+}
+
+input:not(.submit-button) {
+	border-color: #80808080;
+	background-color: inherit;
+	color: inherit;
+}
+
+.submit-button {
+	width: 100%;
+	display: inline-block;
+	box-sizing: border-box;
+	
+	border-color: #b866c3;
+	background-color: #3333;
+	color: #b866c3;
+	
+	text-align: center;
+	cursor: pointer;
+}
+.submit-button:hover {
+	border-color: #9a55a3;
+	background-color: #9a55a3;
+	color: inherit;
+}
+
+.submit-button.destructive {
+	border-color: #e22;
+	color: #e22;
+}
+.submit-button.destructive:hover {
+	border-color: #c22;
+	background-color: #c22;
+	color: #eee;
+}
+
+.submit-button.cancel {
+	border-color: #aaa;
+	color: #ccc;
+}
+.submit-button.cancel:hover {
+	border-color: #777;
+	background-color: #777;
+	color: inherit;
+}
+
+.success {
+	color: #0f0;
+}
+
+.symbol {
+	font-family: SFPro;
+}
+
+label.toggle > input {
+	/* hide the input toggle */
+	display: none;
+}
+label.toggle:has(> input:checked) > .unchecked {
+	/* hide the unchecked part if the toggle is checked */
+	display: none;
+}
+label.toggle:has(> input:not(:checked)) > .checked {
+	/* hide the checked part if the toggle is unchecked */
+	display: none;
+}

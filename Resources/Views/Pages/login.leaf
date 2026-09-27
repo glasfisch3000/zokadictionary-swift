@@ -1,0 +1,49 @@
+#extend("master"):
+	#export("head"):
+	#if(success):
+	<meta http-equiv="refresh" content="1;url=#(return)"/>
+	#endif
+	#endexport
+	
+	#export("title"):
+	Login
+	#endexport
+	
+	#export("body"):
+	#if(success):
+	<div class="panel success">
+		Login successful
+	</div>
+	#else:
+	<div class="panel">
+		<form id="login-form" name="login" method="post">
+			<section>
+				<label for="username">Username</label>
+				<input id="username" type="text" required autofocus name="username" placeholder="Username" title="Username" autocomplete="username" inputmode="text"/>
+				
+				<label for="password">Password</label>
+				<input id="password" type="password" required name="password" placeholder="Password" title="Password" autocomplete="current-password password" inputmode="text"/>
+			</section>
+			
+			<section class="submit-section">
+				#if(error):
+				<div class="error">
+					#if(error == "missingLogin"):
+					Please log in.
+					#elseif(error == "invalidLoginData"):
+					Invalid login, try again.
+					#elseif(error == "invalidSession"):
+					Invalid or expired session, please log in.
+					#else:
+					An unknown error occurred. Please contact the developer and yell at them.
+					#endif
+				</div>
+				#endif
+				
+				<input id="submit" class="submit-button" type="submit" value="Log In" title="Log In"/>
+			</section>
+		</form>
+	</div>
+	#endif
+	#endexport
+#endextend
