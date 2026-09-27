@@ -1,10 +1,19 @@
 import Fluent
 import Vapor
 
-struct UserDTO: Hashable, Sendable, Content {
-    var id: UUID?
-    var name: String
-	var type: User.UserType
-    var salt: UUID
-    var password: Data
+extension User {
+	struct DTO: Hashable, Sendable, Content {
+		var name: String
+		var type: User.UserType
+	}
+	
+	func toDTO() throws -> Identified<DTO> {
+		.init(
+			id: try self.requireID(),
+			value: .init(
+				name: self.name,
+				type: self.type,
+			)
+		)
+	}
 }

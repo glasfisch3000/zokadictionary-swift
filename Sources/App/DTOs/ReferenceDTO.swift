@@ -1,17 +1,19 @@
-import Fluent
 import Vapor
 import Foundation
 
-struct ReferenceDTO: Hashable, Sendable, Content {
-    var id: UUID?
-    var sourceID: Word.IDValue
-    var destinationID: Word.IDValue
-    var comment: String?
-    
-    struct Explicit: Hashable, Sendable, Content {
-        var id: UUID
-        var sourceID: Word.IDValue
-        var destinationID: Word.IDValue
-        var comment: String?
-    }
+extension Reference {
+	struct DTO: Hashable, Sendable, Content {
+		var destinationID: Word.IDValue
+		var comment: String?
+	}
+	
+	func toDTO() throws -> Identified<DTO> {
+		.init(
+			id: try self.requireID(),
+			value: .init(
+				destinationID: self.$destination.id,
+				comment: self.comment,
+			)
+		)
+	}
 }

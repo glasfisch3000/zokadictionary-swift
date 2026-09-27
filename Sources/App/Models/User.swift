@@ -31,14 +31,6 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
         self.password = Self.hashPassword(password, salt: salt)
     }
     
-    func toDTO() -> UserDTO {
-        UserDTO(id: self.id,
-                name: self.name,
-                type: self.type,
-                salt: self.salt,
-                password: self.password)
-    }
-    
 	// change to argon2 hashing
     static func hashPassword(_ password: String, salt: UUID) -> Data {
         var hasher = SHA256()

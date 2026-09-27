@@ -24,18 +24,4 @@ final class Translation: Model, @unchecked Sendable {
         self.comment = comment
         if let wordID = wordID { self.$word.id = wordID }
     }
-    
-    init(dto: TranslationDTO) {
-        self.id = dto.id
-        self.translation = dto.translation
-        self.comment = dto.comment
-        self.$word.id = dto.wordID
-    }
-    
-    func toDTO() -> TranslationDTO {
-        TranslationDTO(id: self.id,
-                       wordID: self.$word.id,
-                       translation: self.translation,
-                       comment: self.comment)
-    }
 }

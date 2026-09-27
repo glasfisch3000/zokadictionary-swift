@@ -24,18 +24,4 @@ final class Reference: Model, @unchecked Sendable {
         self.$destination.id = destinationID
         self.comment = comment
     }
-    
-    init(dto: ReferenceDTO) {
-        self.id = dto.id
-        self.comment = dto.comment
-        self.$source.id = dto.sourceID
-        self.$destination.id = dto.destinationID
-    }
-    
-    func toDTO() -> ReferenceDTO {
-        ReferenceDTO(id: self.id,
-                     sourceID: self.$source.id,
-                     destinationID: self.$destination.id,
-                     comment: self.comment)
-    }
 }

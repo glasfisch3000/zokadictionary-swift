@@ -2,7 +2,7 @@ import Vapor
 import Fluent
 
 extension WebRoutes {
-	struct LoginPageContext: Codable {
+	private struct LoginPageContext: Codable {
 		var success: Bool
 		var error: AuthError?
 		var `return`: String
@@ -43,7 +43,7 @@ extension WebRoutes {
 		return try await renderLogin(success: true, return: returnAddress, req: req)
 	}
 	
-	func renderLogin(success: Bool = false, error: AuthError? = nil, return: String?, req: Request) async throws -> View {
+	private func renderLogin(success: Bool = false, error: AuthError? = nil, return: String?, req: Request) async throws -> View {
 		return try await req.view.render(
 			"Pages/login",
 			LoginPageContext(

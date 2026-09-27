@@ -10,6 +10,7 @@ enum WebError: Error {
 	case malformedRequest
 	case notFound
 	case payloadTooLarge
+	case searchStringTooLarge
 	
 	// server errors
 	case internalError

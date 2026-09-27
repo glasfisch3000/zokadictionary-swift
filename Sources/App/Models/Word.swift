@@ -33,23 +33,6 @@ final class Word: Model, @unchecked Sendable {
         self.description = description
         self.type = type
     }
-    
-    init(dto: WordDTO) {
-        self.id = dto.id
-        self.string = dto.string
-        self.description = dto.description
-        self.type = dto.type
-    }
-    
-    func toDTO() -> WordDTO {
-        WordDTO(id: self.id,
-                string: self.string,
-                description: self.description,
-                type: self.type,
-				deleted: self.deleted,
-				references: self.$references.value?.map { $0.toDTO() },
-				translations: self.$translations.value?.map { $0.toDTO() })
-    }
 }
 
 extension Word {
@@ -61,5 +44,29 @@ extension Word {
 		case preposition
 		case questionWord
 		case verb
+		
+		var userString: String {
+			switch self {
+			case .adjective: "adjective"
+			case .noun: "noun"
+			case .number: "number"
+			case .particle: "particle"
+			case .preposition: "preposition"
+			case .questionWord: "question word"
+			case .verb: "verb"
+			}
+		}
+	}
+}
+
+extension Word {
+	static func < (lhs: Word, rhs: Word) -> Bool {
+		if lhs.string < rhs.string { return true }
+		if lhs.string > rhs.string { return false }
+		
+		if lhs.type.rawValue < rhs.type.rawValue { return true }
+		if lhs.type.rawValue > rhs.type.rawValue { return false }
+		
+		return (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "")
 	}
 }
