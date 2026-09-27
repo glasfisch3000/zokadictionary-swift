@@ -27,14 +27,8 @@ public func configureDB(_ app: Application) async throws {
 }
 
 func configureRoutes(_ app: Application) throws {
-    // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-	
-	app.views.use(.leaf)
-	
-	let fileMiddleware = FileMiddleware(publicDirectory: app.directory.publicDirectory, advancedETagComparison: true)
-	app.middleware.use(fileMiddleware)
-	
+	app.middleware.use(app.sessions.middleware)
+	app.sessions.use(.memory)
 	app.sessions.configuration.cookieFactory = { sessionID in
 		HTTPCookies.Value(
 			string: sessionID.string,
@@ -47,8 +41,18 @@ func configureRoutes(_ app: Application) throws {
 			sameSite: .strict
 		)
 	}
+
+	app.middleware.use(ErrorMiddleware(), at: .beginning)
+	app.middleware.use(SessionAuthenticator())
+	
+	app.views.use(.leaf)
+	let fileMiddleware = FileMiddleware(publicDirectory: app.directory.publicDirectory, advancedETagComparison: true)
+	app.middleware.use(fileMiddleware)
     
-    app.get { req async in
+    app.get("test") { req async in
         "It works!"
     }
+	
+	try app.routes
+		.register(collection: WebRoutes())
 }
