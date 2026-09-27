@@ -9,6 +9,8 @@ struct AppConfig: Sendable {
 	var databaseUsername: String
 	var databasePassword: String
 	
+	var sessionLifetime: TimeInterval
+	
 	var adminUsername: String
 	var adminPassword: String
 	
@@ -19,6 +21,7 @@ struct AppConfig: Sendable {
 			databaseName: Environment.get("DATABASE_NAME") ?? "vapor_database",
 			databaseUsername: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
 			databasePassword: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
+			sessionLifetime: Environment.get("SESSION_LIFETIME").flatMap(TimeInterval.init(_:)) ?? 60*60*24*7, // 7 days by default
 			adminUsername: Environment.get("ADMIN_USERNAME") ?? "admin",
 			adminPassword: Environment.get("ADMIN_PASSWORD") ?? "admin",
 		)

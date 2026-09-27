@@ -6,7 +6,7 @@ struct WordDTO: Hashable, Sendable, Content {
     var id: UUID?
     var string: String
     var description: String?
-    var type: WordType
+	var type: Word.WordType
 	var deleted: Date?
     
     var references: [ReferenceDTO]?

@@ -51,3 +51,15 @@ final class Word: Model, @unchecked Sendable {
 				translations: self.$translations.value?.map { $0.toDTO() })
     }
 }
+
+extension Word {
+	enum WordType: String, Sendable, Hashable, Codable {
+		case adjective
+		case noun
+		case number
+		case particle
+		case preposition
+		case questionWord
+		case verb
+	}
+}

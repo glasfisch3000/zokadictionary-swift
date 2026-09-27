@@ -3,7 +3,7 @@ import struct Foundation.Data
 import struct Foundation.UUID
 import Crypto
 
-final class User: Model, @unchecked Sendable {
+final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
     static let schema = "users"
     
     @ID(key: .id)
@@ -46,6 +46,10 @@ final class User: Model, @unchecked Sendable {
         hasher.update(data: Data(salt.uuidString.utf8))
         return Data(hasher.finalize())
     }
+	
+	func verifyPassword(_ passwordToCheck: String) -> Bool {
+		Self.hashPassword(passwordToCheck, salt: self.salt).elementsEqual(self.password)
+	}
 }
 
 extension User {

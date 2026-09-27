@@ -34,6 +34,19 @@ func configureRoutes(_ app: Application) throws {
 	
 	let fileMiddleware = FileMiddleware(publicDirectory: app.directory.publicDirectory, advancedETagComparison: true)
 	app.middleware.use(fileMiddleware)
+	
+	app.sessions.configuration.cookieFactory = { sessionID in
+		HTTPCookies.Value(
+			string: sessionID.string,
+			expires: .now + AppConfig.global.sessionLifetime,
+			maxAge: nil,
+			domain: nil,
+			path: "/",
+			isSecure: true,
+			isHTTPOnly: false,
+			sameSite: .strict
+		)
+	}
     
     app.get { req async in
         "It works!"
