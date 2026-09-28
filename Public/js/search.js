@@ -20,7 +20,7 @@ searchInput.addEventListener("input", (event) => {
 	
 	controller = new AbortController()
 	
-	fetch("/search?search=" + encodeURIComponent(searchInput.value), {
+	fetch("/words?search=" + encodeURIComponent(searchInput.value), {
 		method: "get",
 		signal: controller.signal,
 	})
@@ -90,5 +90,10 @@ async function applySearch(response) {
 }
 
 function cancelSearch(error) {
-	searchResults.textContent = ""
+	searchResults.innerHTML = ""
+
+	let error = document.createElement("div")
+	error.classList.add("error")
+	error.textContent = "Search failed"
+	searchResults.prepend(error)
 }

@@ -17,9 +17,8 @@ body {
 	font-family: "Courier";
 }
 
-input, .submit-button {
+input, select, .submit-button {
 	border: 0.5px solid;
-	border-radius: 0.3em;
 	padding-left: 0.6em;
 	padding-right: 0.6em;
 	padding-top: 0.35em;
@@ -30,10 +29,21 @@ input, .submit-button {
 	text-decoration: inherit;
 }
 
-input:not(.submit-button) {
+input, .submit-button {
+	border-radius: 0.3em;
+}
+select {
+	border-radius: 0.5em;
+}
+
+input:not(.submit-button), select {
 	border-color: #80808080;
 	background-color: inherit;
 	color: inherit;
+}
+
+select:invalid {
+	color: #888;
 }
 
 .submit-button {

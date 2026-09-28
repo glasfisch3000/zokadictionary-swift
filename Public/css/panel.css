@@ -19,10 +19,10 @@
 	box-sizing: border-box;
 }
 
-.panel > form section:not(:first-child):not(.submit-section) {
+.panel > form > section:not(:first-child):not(.submit-section) {
 	margin-top: 2em;
 }
-.panel > form section:not(:last-child) {
+.panel > form > section:not(:last-child) {
 	margin-bottom: 2em;
 }
 
@@ -39,16 +39,16 @@
 /*	margin-top: 0.2em;*/
 /*}*/
 
-.panel > form input {
+.panel > form input, .panel > form select {
 	width: 100%;
 	box-sizing: border-box;
 }
-.panel > form input:not(.submit-button):not(:last-child) {
+.panel > form input:not(.submit-button):not(:last-child), .panel > form select:not(:last-child) {
 	margin-bottom: 1em;
 }
 
-.panel > form:has(input:required:invalid) input[type=submit] {
-	/* Make the submit button look disabled if the form's input is invalid */
+.panel > form:has(input:required:invalid) input[type=submit], .panel > form:has(select:required:invalid) input[type=submit] {
+	/* Make the submit button look disabled if the form's input/select is invalid */
 	border-color: #80808080;
 	background-color: #3333;
 	color: #aaa;
@@ -76,4 +76,67 @@
 	font-size: 70%;
 	text-align: center;
 	background: #e226;
+}
+
+
+.sub-panel {
+	border: 1px solid #8886;
+	border-radius: 0.7em;
+	padding: 0.8em;
+	padding-top: 0.6em;
+	padding-bottom: 0.6em;
+}
+
+.sub-panel section:not(:first-child) {
+	margin-top: 1em;
+}
+
+.sub-panel input:not(:last-child), .sub-panel select:not(:last-child) {
+	margin-bottom: 0.3em !important;
+}
+
+.sub-panel > .sub-panel-title {
+	display: flex;
+	align-items: center;
+}
+
+.sub-panel > .sub-panel-title > .small-button {
+	margin-left: auto;
+}
+
+.small-button {
+	border: none;
+	border-radius: 0.3em;
+	padding: 0.2em;
+
+	width: 1.3em;
+	height: 1.3em;
+	box-sizing: content-box;
+
+	text-align: center;
+	align-content: center;
+
+	color: #aaa;
+	background: #222;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.small-button:hover {
+	color: inherit;
+}
+
+.sub-panel .removable-section {
+	display: flex;
+	align-items: center;
+}
+.sub-panel .removable-section > div {
+	width: stretch;
+	width: -webkit-fill-available;
+}
+.sub-panel .removable-section > div:not(:last-child) {
+	margin-right: 0.8em;
+}
+.sub-panel .removable-section > .small-button {
+	margin-left: auto;
 }

@@ -8,11 +8,9 @@
 	#endexport
 	
 	#export("content"):
-	#if(success):
-	<div class="panel success">
+	<div class="panel success" id="submit-success" hidden>
 	Word added
 	</div>
-	#endif
 	
 	<div class="panel">
 		<form id="input-form" name="input" method="post">
@@ -21,14 +19,23 @@
 				<input id="string" type="text" required autofocus name="string" placeholder="Word" title="Word" inputmode="text"/>
 				
 				<label for="type">Type</label>
-				<input id="type" type="text" required name="type" placeholder="Type" title="Type" inputmode="text"/>
+				<select id="type" name="type" required>
+					<option value="" selected disabled> Select a word type </option>
+					<option value="adjective"> Adjective </option>
+					<option value="noun"> Noun </option>
+					<option value="number"> Number </option>
+					<option value="particle"> Particle </option>
+					<option value="preposition"> Preposition </option>
+					<option value="questionWord"> Question word </option>
+					<option value="verb"> Verb </option>
+				</select>
 			</section>
 			
 			<section class="sub-panel" id="translations">
 				<div class="sub-panel-title">
 					Translations:
 					
-					<button class="symbol" onClick="addTranslation()">􀅼</button>
+					<button class="symbol small-button" type="button" onClick="addTranslation()">􀅼</button>
 				</div>
 			</section>
 			
@@ -36,12 +43,14 @@
 				<div class="sub-panel-title">
 					References:
 					
-					<button class="symbol" onClick="addReference()">􀅼</button>
+					<button class="symbol small-button" type="button" onClick="addReference()">􀅼</button>
 				</div>
 			</section>
 			
 			<section class="submit-section">
-				<input id="submit" class="submit-button" type="submit" value="Submit" title="Submit"/>
+				<div class="error" id="submit-error" hidden></div>
+				
+				<button id="submit" class="submit-button" type="button" onClick="submitNewItem()"> Submit </button>
 				<a class="submit-button cancel" href="#(return)"> Cancel </a>
 			</section>
 		</form>
