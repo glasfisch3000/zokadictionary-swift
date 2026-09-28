@@ -14,4 +14,6 @@ enum WebError: Error {
 	
 	// server errors
 	case internalError
+	
+	case other(debugInfo: String)
 }
