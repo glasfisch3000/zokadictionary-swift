@@ -39,6 +39,9 @@ private func withMappingErrors<T>(_ closure: () async throws -> T) async throws(
 	} catch let error as Abort where error.status == .unprocessableEntity {
 		// vapor throws this when required url parameters can't be parsed correctly
 		throw .malformedRequest
+	} catch let error as Abort where error.status == .unauthorized {
+		// vapor throws this when a required login doesn't exist
+		throw .auth(.missingLogin)
 	} catch {
 		throw .internalError
 	}
