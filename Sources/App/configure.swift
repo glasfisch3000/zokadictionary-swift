@@ -43,7 +43,7 @@ func configureRoutes(_ app: Application) throws {
 		)
 	}
 
-	app.middleware.use(ErrorMiddleware(), at: .beginning)
+	app.middleware.use(ErrorMiddleware())
 	app.middleware.use(SessionAuthenticator())
 	
 	app.views.use(.leaf)
