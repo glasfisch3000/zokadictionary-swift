@@ -61,21 +61,33 @@ extension WebRoutes {
 	}
 	
 	func getSearch(req: Request) async throws -> [Identified<Word.DTOWithIdentifiedRelations>] {
-		let searchString = try req.query.get(String.self, at: "search")
+		let searchString = try req.query.get(String?.self, at: "search")
 		
-		if searchString.count > 100 {
-			throw Abort(.badRequest)
+		let results: [Word]
+		if let searchString {
+			if searchString.count > 100 {
+				throw Abort(.badRequest)
+			}
+			
+			let words = try await Word
+				.query(on: req.db)
+				.with(\.$references) {
+					$0.with(\.$destination)
+				}
+				.with(\.$translations)
+				.all()
+			
+			results = try await search(searchString, in: words) ?? []
+		} else {
+			results = try await Word
+				.query(on: req.db)
+				.with(\.$references) {
+					$0.with(\.$destination)
+				}
+				.with(\.$translations)
+				.all()
 		}
 		
-		let words = try await Word
-			.query(on: req.db)
-			.with(\.$references) {
-				$0.with(\.$destination)
-			}
-			.with(\.$translations)
-			.all()
-		
-		let results = try await search(searchString, in: words) ?? []
 		return try results.map { try $0.toDTOWithIdentifiedRelations(on: req.db) }
 	}
 }

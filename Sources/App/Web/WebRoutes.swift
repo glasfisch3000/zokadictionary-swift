@@ -13,7 +13,7 @@ struct WebRoutes: RouteCollection {
 		}
 		
 		routes.get(use: index(req:))
-		routes.get("search", use: getSearch(req:))
+		routes.get("words", use: getSearch(req:))
 		
 		routes.group("new-item") {
 			$0.get(use: getNewItem(req:))
