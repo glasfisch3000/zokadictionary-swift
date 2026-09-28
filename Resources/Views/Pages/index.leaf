@@ -1,0 +1,78 @@
+#extend("standard"):
+	#export("standard-head"):
+	<link rel="stylesheet" href="/css/index.css">
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary
+	#endexport
+	
+	#export("content"):
+	#if(search):
+	<div id="search-info">
+		#if(words.count > 0):
+		
+		<div class="symbol"> 􀭥 </div>
+		<div> Search: "#(search)" </div>
+		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
+		
+		#else:
+		
+		<div class="symbol"> 􂈂 </div>
+		<div class="error">
+		No search results
+		</div>
+		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
+		
+		#endif
+	</div>
+	#endif
+	
+	<div id="content">
+		#for(word in words):
+		<div class="word-card">
+			<div class="buttons">
+				#if(user.type == "admin" || user.type == "contributor"):
+				<a class="word-card-button symbol" href="/words/#(word.id)/edit?return=#path"> 􂽱 </a>
+				<a class="word-card-button destructive symbol" href="/words/#(word.id)/delete?return=#path"> 􀈑 </a>
+				#endif
+			</div>
+			<a href="/words/#(word.id)">
+				<div class="title">
+					#(word.value.string)
+					<span class="type"> (#(word.value.type)]) </span>
+				</div>
+				
+				#if(word.value.translations.count > 0):
+				<div class="other-info">
+					Translations:
+					
+					#for(translation in word.value.translations):
+					<span class="translation">
+						#(translation.value.translation)
+						#if(translation.value.comment):
+						<span class="comment"> #(translation.value.comment) </span>
+					</span>
+					#endfor
+				</div>
+				#endif
+				
+				#if(word.value.references.count > 0):
+				<div class="other-info">
+					References:
+					
+					#for(reference in word.value.references):
+					<span class="reference">
+						#(reference.value.destination.string)
+						#if(reference.value.comment):
+						<span class="comment"> #(reference.value.comment) </span>
+					</span>
+					#endfor
+				</div>
+				#endif
+			</a>
+		</div>
+		#endfor
+	</div>
+	#endexport
+#endextend

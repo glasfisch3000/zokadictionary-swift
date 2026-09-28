@@ -20,7 +20,9 @@ extension WebRoutes {
 			
 			let words = try await Word
 				.query(on: req.db)
-				.with(\.$references)
+				.with(\.$references) {
+					$0.with(\.$destination)
+				}
 				.with(\.$translations)
 				.all()
 			
@@ -36,7 +38,9 @@ extension WebRoutes {
 		} else {
 			let words = try await Word
 				.query(on: req.db)
-				.with(\.$references)
+				.with(\.$references) {
+					$0.with(\.$destination)
+				}
 				.with(\.$translations)
 				.sort(\.$id, .ascending)
 				.sort(\.$type, .ascending)
@@ -65,7 +69,9 @@ extension WebRoutes {
 		
 		let words = try await Word
 			.query(on: req.db)
-			.with(\.$references)
+			.with(\.$references) {
+				$0.with(\.$destination)
+			}
 			.with(\.$translations)
 			.all()
 		
