@@ -2,19 +2,24 @@ import Vapor
 import Fluent
 
 extension WebRoutes {
-	private struct NewItemContext: Encodable {
-		var user: Identified<User.DTO>
-		var `return`: String
-		var success: Bool
-	}
-	
 	func getNewItem(req: Request) async throws -> View {
+		struct Context: Encodable {
+			var user: Identified<User.DTO>
+			var `return`: String
+		}
+		
 		let user = try req.auth.require(User.self)
 		let returnPath = try req.query.get(String?.self, at: "return")
-		return try await renderNewItem(user: user, return: returnPath, req: req)
+		
+		let context = Context(
+			user: try user.toDTO(),
+			return: returnPath ?? "/"
+		)
+		
+		return try await req.view.render("Pages/new-item", context)
 	}
 	
-	func postNewItem(req: Request) async throws -> View {
+	func postNewItem(req: Request) async throws -> Bool {
 		struct DTO: Codable {
 			var string: String
 			var type: Word.WordType
@@ -23,7 +28,6 @@ extension WebRoutes {
 		}
 		
 		let user = try req.auth.require(User.self)
-		let returnPath = try req.query.get(String?.self, at: "return")
 		let dto = try req.content.decode(DTO.self)
 		
 		try await req.db.transaction { db in
@@ -42,16 +46,6 @@ extension WebRoutes {
 			try await references.create(on: db)
 		}
 		
-		return try await renderNewItem(success: true, user: user, return: returnPath, req: req)
-	}
-	
-	private func renderNewItem(success: Bool = false, user: User, return: String?, req: Request) async throws -> View {
-		let context = NewItemContext(
-			user: try user.toDTO(),
-			return: `return` ?? "/",
-			success: success
-		)
-		
-		return try await req.view.render("Pages/new-item", context)
+		return true
 	}
 }
