@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:6.1.0-noble AS build
+FROM swift:6.3-noble AS build
 
 # Install OS updates
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -23,23 +23,26 @@ RUN swift package resolve \
 # Copy entire repo into container
 COPY . .
 
+RUN mkdir /staging
+
 # Build everything, with optimizations, with static linking, and using jemalloc
 # N.B.: The static version of jemalloc is incompatible with the static Swift runtime.
-RUN swift build -c release \
-                --static-swift-stdlib \
-                -Xlinker -ljemalloc
+RUN --mount=type=cache,target=/build/.build \
+	swift build -c release \
+		--product App \
+		--static-swift-stdlib \
+		-Xlinker -ljemalloc && \
+	# Copy main executable to staging area
+	cp "$(swift build -c release --show-bin-path)/App" /staging && \
+	# Copy resources bundled by SPM to staging area
+	find -L "$(swift build -c release --show-bin-path)" -regex '.*\.resources$' -exec cp -Ra {} /staging \;
+
 
 # Switch to the staging area
 WORKDIR /staging
 
-# Copy main executable to staging area
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/App" ./
-
 # Copy static swift backtracer binary to staging area
 RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
-
-# Copy resources bundled by SPM to staging area
-RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
 # Copy any resources from the public directory and views directory if the directories exist
 # Ensure that by default, neither the directory nor any of its contents are writable.
@@ -85,3 +88,4 @@ EXPOSE 8080
 
 # Start the Vapor service when the image is run, default to listening on 8080 in production environment
 ENTRYPOINT ["./App"]
+CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]

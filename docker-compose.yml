@@ -18,15 +18,18 @@
 volumes:
   db_data:
 
-networks:
-  zokadictionary:
-
 x-shared_environment: &shared_environment
   LOG_LEVEL: ${LOG_LEVEL:-debug}
+  DATABASE_HOST: db
+  DATABASE_NAME: &db_name zokadictionary
+  DATABASE_USERNAME: &db_username zokadictionary
+  DATABASE_PASSWORD: &db_password zokadictionary
 
 services:
   app:
-    image: ghcr.io/glasfisch3000/zokadictionary-swift:main
+    image: zokadictionary-swift:latest
+    build:
+	  context: .
     environment:
       <<: *shared_environment
     env_file: .env
@@ -34,12 +37,12 @@ services:
       - db
     ports:
       - '2718:8080'
-    networks:
-      - zokadictionary
     # user: '0' # uncomment to run as root for testing purposes even though Dockerfile defines 'vapor' user.
-    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080", "--config-file", "/app/zokadictionary-config.yaml"]
+    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
   migrate:
-    image: ghcr.io/glasfisch3000/zokadictionary-swift:main
+    image: zokadictionary-swift:latest
+    build:
+      context: .
     environment:
       <<: *shared_environment
     env_file: .env
@@ -48,10 +51,10 @@ services:
     command: ["migrate", "--yes"]
     deploy:
       replicas: 0
-    networks:
-      - zokadictionary
   revert:
-    image: ghcr.io/glasfisch3000/zokadictionary-swift:main
+    image: zokadictionary-swift:latest
+    build:
+      context: .
     environment:
       <<: *shared_environment
     env_file: .env
@@ -60,18 +63,13 @@ services:
     command: ["migrate", "--revert", "--yes"]
     deploy:
       replicas: 0
-    networks:
-      - zokadictionary
   db:
     image: postgres:16-alpine
     volumes:
-      - db_data:/var/lib/postgresql/data/pgdata
+      - db_data:/var/lib/postgresql
     environment:
-      PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_USER: zokadictionary
-      POSTGRES_PASSWORD: zokadictionary
-      POSTGRES_DB: zokadictionary
+      POSTGRES_USER: *db_username
+      POSTGRES_PASSWORD: *db_password
+      POSTGRES_DB: *db_name
     ports:
       - '5432:5432'
-    networks:
-      - zokadictionary
