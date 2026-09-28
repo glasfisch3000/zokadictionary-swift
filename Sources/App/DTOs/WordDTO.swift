@@ -26,7 +26,7 @@ extension Word {
 		var type: Word.WordType
 		var deleted: Date?
 		
-		var references: [Identified<Reference.DTO>]
+		var references: [Identified<Reference.DTOWithDestination>]
 		var translations: [Identified<Translation.DTO>]
 	}
 	

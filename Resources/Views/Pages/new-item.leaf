@@ -1,0 +1,50 @@
+#extend("standard"):
+	#export("standard-head"):
+	<script src="/js/new-item.js"></script>
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary - New Word
+	#endexport
+	
+	#export("content"):
+	#if(success):
+	<div class="panel success">
+	Word added
+	</div>
+	#endif
+	
+	<div class="panel">
+		<form id="input-form" name="input" method="post">
+			<section>
+				<label for="string">Word</label>
+				<input id="string" type="text" required autofocus name="string" placeholder="Word" title="Word" inputmode="text"/>
+				
+				<label for="type">Type</label>
+				<input id="type" type="text" required name="type" placeholder="Type" title="Type" inputmode="text"/>
+			</section>
+			
+			<section class="sub-panel" id="translations">
+				<div class="sub-panel-title">
+					Translations:
+					
+					<button class="symbol" onClick="addTranslation()">􀅼</button>
+				</div>
+			</section>
+			
+			<section class="sub-panel" id="references">
+				<div class="sub-panel-title">
+					References:
+					
+					<button class="symbol" onClick="addReference()">􀅼</button>
+				</div>
+			</section>
+			
+			<section class="submit-section">
+				<input id="submit" class="submit-button" type="submit" value="Submit" title="Submit"/>
+				<a class="submit-button cancel" href="#(return)"> Cancel </a>
+			</section>
+		</form>
+	</div>
+	#endexport
+#endextend

@@ -19,7 +19,7 @@
 		</label>
 		
 		#if(user.value.type == "admin" || user.value.type == "contributor"):
-		<a id="new-word-button" class="header-item symbol" href="/upload?return=#path"> 􀅼 </a>
+		<a id="new-word-button" class="header-item symbol" href="/new-item?return=#path"> 􀅼 </a>
 		#endif
 		
 		<label id="login" class="header-item toggle symbol">
