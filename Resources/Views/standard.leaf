@@ -18,7 +18,7 @@
 			<div> </div>
 		</label>
 		
-		#if(user.type == "admin" || user.type == "contributor"):
+		#if(user.value.type == "admin" || user.value.type == "contributor"):
 		<a id="new-word-button" class="header-item symbol" href="/upload?return=#path"> 􀅼 </a>
 		#endif
 		
@@ -32,7 +32,7 @@
 	
 	<div id="login-dropdown" class="dropdown">
 		#if(user):
-		<div class="dropdown-item"> #(user.username) </div>
+		<div class="dropdown-item"> #(user.value.name) </div>
 		
 		<hr/>
 		
