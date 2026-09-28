@@ -27,7 +27,7 @@ extension WebRoutes {
 			var references: [Reference.DTO]
 		}
 		
-		let user = try req.auth.require(User.self)
+		try req.auth.require(User.self)
 		let dto = try req.content.decode(DTO.self)
 		
 		try await req.db.transaction { db in

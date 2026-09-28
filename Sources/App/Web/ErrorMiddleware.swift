@@ -27,6 +27,7 @@ struct ErrorMiddleware: AsyncMiddleware {
 
 private func withMappingErrors<T>(_ closure: () async throws -> T) async throws(WebError) -> T {
 	let env = (try? Environment.detect()) ?? .production
+	let debug = env.name == "testing"
 	
 	do {
 		return try await closure()
@@ -35,13 +36,13 @@ private func withMappingErrors<T>(_ closure: () async throws -> T) async throws(
 	} catch let error as AuthError {
 		throw .auth(error)
 	} catch let error as PSQLError {
-		if env.isRelease {
+		if debug {
 			throw .internalError
 		} else {
 			throw .other(debugInfo: error.debugDescription)
 		}
 	} catch let error as DecodingError {
-		if env.isRelease {
+		if debug {
 			throw .malformedRequest
 		} else {
 			throw .other(debugInfo: error.localizedDescription)
@@ -53,7 +54,7 @@ private func withMappingErrors<T>(_ closure: () async throws -> T) async throws(
 		// vapor throws this when a required login doesn't exist
 		throw .auth(.missingLogin)
 	} catch let error {
-		if env.isRelease {
+		if debug {
 			throw .internalError
 		} else {
 			throw .other(debugInfo: error.localizedDescription)
