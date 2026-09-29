@@ -1,7 +1,7 @@
 #content {
 	margin: 1em auto;
 	
-	min-width: 20em;
+	min-width: clamp(20em, 100%, 30em);
 	max-width: 50em;
 	width: 60%;
 	box-sizing: border-box;
@@ -53,7 +53,8 @@
 }
 
 .word-card {
-	margin: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 	border: 0.5px solid #8888;
 	border-radius: 1em;
 	overflow: hidden;
@@ -92,7 +93,7 @@
 	box-sizing: content-box;
 	
 	display: grid;
-	grid-template-columns: repeat(auto-fill, 1.7em);
+	grid-template-columns: repeat(2, 1.7em);
 	gap: 0.2em;
 	justify-content: end;
 	
