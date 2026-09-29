@@ -11,20 +11,14 @@
 	#if(search):
 	<div id="search-info">
 		#if(count(words) > 0):
-		
 		<div class="symbol"> 􀭥 </div>
 		<div> Search: "#(search)" </div>
-		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
-		
 		#else:
-		
 		<div class="symbol"> 􂈂 </div>
-		<div class="error">
-		No search results for "#(search)"
-		</div>
-		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
-		
+		<div class="error"> No search results for "#(search)" </div>
 		#endif
+		
+		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
 	</div>
 	#endif
 	
