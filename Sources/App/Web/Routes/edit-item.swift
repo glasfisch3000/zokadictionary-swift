@@ -64,8 +64,8 @@ extension WebRoutes {
 			word.type = dto.type
 			try await word.update(on: db)
 			
-			try await word.translations.delete(on: req.db)
-			try await word.references.delete(on: req.db)
+			try await word.translations.delete(on: db)
+			try await word.references.delete(on: db)
 			
 			let translations = dto.translations.map {
 				Translation(translation: $0.translation, comment: $0.comment.flatMap { $0.isEmpty ? nil : $0 }, wordID: wordID)
