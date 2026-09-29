@@ -21,7 +21,7 @@ extension WebRoutes {
 				$0.with(\.$destination)
 			})
 			.first() else {
-			throw WebError.malformedRequest
+			throw WebError.notFound
 		}
 		
 		let user = try req.auth.require(User.self)
