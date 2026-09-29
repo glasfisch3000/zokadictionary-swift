@@ -36,12 +36,12 @@ extension WebRoutes {
 			let wordID = try word.requireID()
 			
 			let translations = dto.translations.map {
-				Translation(translation: $0.translation, comment: $0.comment, wordID: wordID)
+				Translation(translation: $0.translation, comment: $0.comment.flatMap { $0.isEmpty ? nil : $0 }, wordID: wordID)
 			}
 			try await translations.create(on: db)
 			
 			let references = dto.references.map {
-				Reference(sourceID: wordID, destinationID: $0.destinationID, comment: $0.comment)
+				Reference(sourceID: wordID, destinationID: $0.destinationID, comment: $0.comment.flatMap { $0.isEmpty ? nil : $0 })
 			}
 			try await references.create(on: db)
 		}

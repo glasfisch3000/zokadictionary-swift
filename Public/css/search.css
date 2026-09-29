@@ -146,18 +146,17 @@
 
 .search-item .item-other-info {
 	margin-top: 0.2em;
-	opacity: 90%;
+	color: #ccc;
 	font-size: 75%;
 	font-weight: normal;
 }
 
-.search-item .item-translation, .search-item .item-reference {
-	font-weight: bolder;
+.search-item :is(.item-translation,.item-reference) {
 	overflow-wrap: break-word;
-	opacity: 100%;
+	color: #eee;
 }
 
-.search-item .item-translation:not(:last-child)::after, .search-item .item-reference:not(:last-child):.after {
+.search-item :is(.item-translation,.item-reference):not(:last-child)::after {
 	content: ", ";
 }
 

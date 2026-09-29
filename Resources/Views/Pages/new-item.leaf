@@ -41,7 +41,7 @@
 			
 			<section class="sub-panel" id="references">
 				<div class="sub-panel-title">
-					References:
+					See also:
 					
 					<button class="symbol small-button" type="button" onClick="addReference()">􀅼</button>
 				</div>

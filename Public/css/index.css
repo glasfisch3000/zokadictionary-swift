@@ -1,16 +1,10 @@
 #content {
-	display: grid;
+	margin: 1em auto;
 	
-	/* 2x7em columns at 20em page width, 2x9.5em at 25em */
-	grid-template-columns: repeat(auto-fill, clamp(7em, calc(50vw - 3em), 9.5em));
-	gap: 1em;
-}
-
-@media screen and (width >= 25rem) {
-	#content {
-		/* 2x9.5em columns at 25em page width, 3x9.5em at 36.5em, 5x12em at 69em */
-		grid-template-columns: repeat(auto-fill, clamp(9.5em, calc(7.69vw + 6.69em), 12em));
-	}
+	min-width: 20em;
+	max-width: 50em;
+	width: 60%;
+	box-sizing: border-box;
 }
 
 #search-info {
@@ -59,11 +53,12 @@
 }
 
 .word-card {
+	margin: 1em;
 	border: 0.5px solid #8888;
 	border-radius: 1em;
 	overflow: hidden;
 	
-	padding-top: 0.4em;
+	padding-top: 0.5em;
 	padding-left: 0.7em;
 	padding-right: 0.6em;
 	padding-bottom: 0.5em;
@@ -71,60 +66,20 @@
 	position: relative;
 }
 
-.word-card > a {
-	text-decoration: none;
-	color: inherit;
-}
-
-.word-card > .buttons {
-	position: absolute;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-	padding-right: 0.8em;
-	padding-left: 0.8em;
-	box-sizing: border-box;
-	
-	display: grid;
-	grid-template-columns: repeat(auto-fit, 1.7em);
-	gap: 0.2em;
-	justify-content: end;
-	
-	width: 100%;
-}
-
-.word-card-button {
-	padding: 0.2em;
-	border-radius: 0.3em;
-	background: #222;
-	color: #aaa;
-	
-	width: 1.3em;
-	height: 1.3em;
-	text-align: center;
-	align-content: center;
-	
-	cursor: pointer;
-	text-decoration: none;
-}
-.word-card-button:hover {
-	color: inherit;
-}
-.word-card-button:active {
-	color: inherit;
-	background: #555;
-}
-
-.word-card-button.destructive:hover {
-	color: #f44;
-}
-.word-card-button.destructive:hover {
-	color: #f44;
-}
-
 .word-card .title {
 	font-weight: bolder;
 	overflow-wrap: break-word;
+	display: flex;
 }
+
+.word-card a:not(.small-button) {
+	text-decoration: none;
+	color: inherit;
+}
+.word-card a:not(.small-button):hover {
+	text-decoration: underline;
+}
+
 .word-card .title .type {
 	opacity: 80%;
 	font-weight: normal;
@@ -132,14 +87,40 @@
 	overflow-wrap: break-word;
 }
 
+.word-card .buttons {
+	margin-left: auto;
+	box-sizing: content-box;
+	
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 1.7em);
+	gap: 0.2em;
+	justify-content: end;
+	
+	min-width: 3.6em;
+}
+
 .word-card .other-info {
 	margin-top: 0.3em;
 	font-size: 80%;
 }
+.word-card .other-info:not(:last-child) {
+	margin-bottom: 0.5em;
+}
 
-.word-card .translation, .word-card .reference {
+.word-card :is(.translation,.reference) {
+	margin-top: 0.2em;
+	padding-left: 0.5em;
+	
 	font-weight: bolder;
 	overflow-wrap: break-word;
+}
+.word-card .translation::before {
+	content: "-";
+	font-weight: normal;
+}
+.word-card .reference::before {
+	content: "→";
+	font-weight: normal;
 }
 
 .word-card .comment {
@@ -147,9 +128,4 @@
 	opacity: 80%;
 	
 	overflow-wrap: break-word;
-}
-
-.word-card .translation:not(:last-child)::after, .word-card .reference:not(:last-child)::after {
-	content: ", "
-	font-weight: normal;
 }

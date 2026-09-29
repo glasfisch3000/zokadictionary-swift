@@ -19,6 +19,7 @@ function addTranslation() {
 	let cancelButton = document.createElement("button")
 	cancelButton.classList.add("symbol")
 	cancelButton.classList.add("small-button")
+	cancelButton.classList.add("destructive")
 	cancelButton.textContent = "􀆄"
 	cancelButton.setAttribute("onClick", `removeTranslation(${number})`)
 	cancelButton.setAttribute("type", "button")
@@ -37,6 +38,7 @@ function addTranslation() {
 	translationInput.setAttribute("placeholder", "Translation")
 	translationInput.setAttribute("title", "Translation")
 	translationInput.setAttribute("inputmode", "text")
+	translationInput.required = true
 	contents.appendChild(translationInput)
 	
 	
@@ -79,6 +81,7 @@ function addReference() {
 	let cancelButton = document.createElement("button")
 	cancelButton.classList.add("symbol")
 	cancelButton.classList.add("small-button")
+	cancelButton.classList.add("destructive")
 	cancelButton.textContent = "􀆄"
 	cancelButton.setAttribute("onClick", `removeReference(${number})`)
 	cancelButton.setAttribute("type", "button")
@@ -93,6 +96,7 @@ function addReference() {
 	let referenceSelect = document.createElement("select")
 	referenceSelect.classList.add("reference-select")
 	referenceSelect.id = `reference-${number}`
+	referenceSelect.required = true
 	contents.appendChild(referenceSelect)
 
 	if (allWords.length > 0) {
@@ -114,6 +118,7 @@ function addReference() {
 		let option = document.createElement("option")
 		option.disabled = true
 		option.selected = true
+		option.value = ""
 		option.textContent = "Loading…"
 		referenceSelect.appendChild(option)
 
@@ -152,9 +157,18 @@ function addReference() {
 
 function appendWordOptions(words, select) {
 	select.innerHTML = ""
+	
+	let defaultOption = document.createElement("option")
+	defaultOption.textContent = "Select a word"
+	defaultOption.disabled = true
+	defaultOption.selected = true
+	defaultOption.value = ""
+	select.appendChild(defaultOption)
+	
 	for (let word of words) {
 		let option = document.createElement("option")
 		option.setAttribute("value", word.id)
+		option.textContent = `${word.value.string} (${describeWordType(word.value.type)})`
 		select.appendChild(option)
 	}
 }
@@ -165,6 +179,7 @@ function reportWordFetchError(error, select) {
 	let option = document.createElement("option")
 	option.disabled = true
 	option.selected = true
+	option.value = ""
 	option.textContent = error
 	select.appendChild(option)
 }
@@ -175,15 +190,15 @@ function removeReference(number) {
 }
 
 
-function submitNewItem() {
+async function submitNewItem() {
 	let string = document.getElementById("string").value
 	let type = document.getElementById("type").value
 
 	let translations = []
 	let references = []
 
-	for (let i = 0; i<translationNumber; i++) {
-		if(!document.getElementById(`translation-section-${i}`)
+	for (let i = 1; i<=translationNumber; i++) {
+		if(!document.getElementById(`translation-section-${i}`))
 			continue
 
 		let translation = document.getElementById(`translation-${i}`).value
@@ -195,8 +210,8 @@ function submitNewItem() {
 		})
 	}
 
-	for (let i = 0; i<referenceNumber; i++) {
-		if(!document.getElementById(`reference-section-${i}`)
+	for (let i = 1; i<=referenceNumber; i++) {
+		if(!document.getElementById(`reference-section-${i}`))
 			continue
 
 		let destinationID = document.getElementById(`reference-${i}`).value
@@ -230,6 +245,8 @@ function submitNewItem() {
 		if (response.ok) {
 			success.hidden = false
 			error.hidden = true
+			
+			clearForm()
 		} else {
 			success.hidden = true
 			error.hidden = false
@@ -239,5 +256,17 @@ function submitNewItem() {
 		success.hidden = true
 		error.hidden = false
 		error.textContent = "Unable to send request"
+	}
+}
+
+function clearForm() {
+	document.getElementById("input-form").reset()
+	
+	for (let section of document.getElementById("translations").children) {
+		if (section.classList.contains("removable-section")) section.remove()
+	}
+	
+	for (let section of document.getElementById("references").children) {
+		if (section.classList.contains("removable-section")) section.remove()
 	}
 }

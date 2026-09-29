@@ -39,15 +39,15 @@
 /*	margin-top: 0.2em;*/
 /*}*/
 
-.panel > form input, .panel > form select {
+.panel > form :is(input,select) {
 	width: 100%;
 	box-sizing: border-box;
 }
-.panel > form input:not(.submit-button):not(:last-child), .panel > form select:not(:last-child) {
+.panel > form :is(input,select):not(.submit-button):not(:last-child) {
 	margin-bottom: 1em;
 }
 
-.panel > form:has(input:required:invalid) input[type=submit], .panel > form:has(select:required:invalid) input[type=submit] {
+.panel > form:has(:is(input,select):required:invalid) :is(input[type=submit],button.submit-button) {
 	/* Make the submit button look disabled if the form's input/select is invalid */
 	border-color: #80808080;
 	background-color: #3333;
@@ -91,7 +91,7 @@
 	margin-top: 1em;
 }
 
-.sub-panel input:not(:last-child), .sub-panel select:not(:last-child) {
+.sub-panel :is(input,select):not(:last-child) {
 	margin-bottom: 0.3em !important;
 }
 
@@ -102,28 +102,6 @@
 
 .sub-panel > .sub-panel-title > .small-button {
 	margin-left: auto;
-}
-
-.small-button {
-	border: none;
-	border-radius: 0.3em;
-	padding: 0.2em;
-
-	width: 1.3em;
-	height: 1.3em;
-	box-sizing: content-box;
-
-	text-align: center;
-	align-content: center;
-
-	color: #aaa;
-	background: #222;
-	cursor: pointer;
-	text-decoration: none;
-}
-
-.small-button:hover {
-	color: inherit;
 }
 
 .sub-panel .removable-section {

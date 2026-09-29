@@ -48,6 +48,7 @@ func configureRoutes(_ app: Application) throws {
 	
 	app.views.use(.leaf)
 	app.leaf.tags["path"] = PathTag()
+	app.leaf.tags["describeWordType"] = DescribeWordTypeTag()
 	
 	let fileMiddleware = FileMiddleware(publicDirectory: app.directory.publicDirectory, advancedETagComparison: true)
 	app.middleware.use(fileMiddleware)

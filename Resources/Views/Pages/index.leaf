@@ -10,7 +10,7 @@
 	#export("content"):
 	#if(search):
 	<div id="search-info">
-		#if(words.count > 0):
+		#if(count(words) > 0):
 		
 		<div class="symbol"> 􀭥 </div>
 		<div> Search: "#(search)" </div>
@@ -20,7 +20,7 @@
 		
 		<div class="symbol"> 􂈂 </div>
 		<div class="error">
-		No search results
+		No search results for "#(search)"
 		</div>
 		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
 		
@@ -30,49 +30,54 @@
 	
 	<div id="content">
 		#for(word in words):
-		<div class="word-card">
-			<div class="buttons">
+		<div class="word-card" id="word-#(word.id)">
+			<div class="title">
+				<a href="/words/#(word.id)">
+					#(word.value.string)
+					<span class="type"> (#describeWordType(word.value.type)) </span>
+				</a>
+				
 				#if(user.value.type == "admin" || user.value.type == "contributor"):
-				<a class="word-card-button symbol" href="/words/#(word.id)/edit?return=#path"> 􂽱 </a>
-				<a class="word-card-button destructive symbol" href="/words/#(word.id)/delete?return=#path"> 􀈑 </a>
+				<div class="buttons">
+					<a class="small-button symbol" href="/words/#(word.id)/edit?return=#path"> 􂽱 </a>
+					<a class="small-button destructive symbol" href="/words/#(word.id)/delete?return=#path"> 􀈑 </a>
+				</div>
 				#endif
 			</div>
-			<a href="/words/#(word.id)">
-				<div class="title">
-					#(word.value.string)
-					<span class="type"> (#(word.value.type)]) </span>
-				</div>
+			
+			#if(count(word.value.translations) > 0):
+			<div class="other-info">
+				Translations:
 				
-				#if(word.value.translations.count > 0):
-				<div class="other-info">
-					Translations:
-					
-					#for(translation in word.value.translations):
-					<span class="translation">
+				#for(translation in word.value.translations):
+				<div class="translation">
+					<span>
 						#(translation.value.translation)
 						#if(translation.value.comment):
-						<span class="comment"> #(translation.value.comment) </span>
+						<span class="comment"> (#(translation.value.comment)) </span>
 						#endif
 					</span>
-					#endfor
 				</div>
-				#endif
+				#endfor
+			</div>
+			#endif
+			
+			#if(count(word.value.references) > 0):
+			<div class="other-info">
+				See also:
 				
-				#if(word.value.references.count > 0):
-				<div class="other-info">
-					References:
-					
-					#for(reference in word.value.references):
-					<span class="reference">
-						#(reference.value.destination.string)
+				#for(reference in word.value.references):
+				<div class="reference">
+					<a href="\#word-#(reference.value.destination.id)">
+						#(reference.value.destination.value.string)
 						#if(reference.value.comment):
-						<span class="comment"> #(reference.value.comment) </span>
+						<span class="comment"> (#(reference.value.comment)) </span>
 						#endif
-					</span>
-					#endfor
+					</a>
 				</div>
-				#endif
-			</a>
+				#endfor
+			</div>
+			#endif
 		</div>
 		#endfor
 	</div>

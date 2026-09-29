@@ -49,11 +49,11 @@ async function applySearch(response) {
 			info.appendChild(title)
 			
 			let type = document.createElement("span")
-			voices.classList.add("item-type")
-			voices.textContent = ` (${word.value.type})`
-			title.appendChild(voices)
+			type.classList.add("item-type")
+			type.textContent = ` (${describeWordType(word.value.type)})`
+			title.appendChild(type)
 			
-			if (word.value.translation.length > 0) {
+			if (word.value.translations.length > 0) {
 				let translations = document.createElement("div")
 				translations.classList.add("item-other-info")
 				translations.textContent = "Translations: "
@@ -70,7 +70,7 @@ async function applySearch(response) {
 			if (word.value.references.length > 0) {
 				let references = document.createElement("div")
 				references.classList.add("item-other-info")
-				references.textContent = "References: "
+				references.textContent = "See also: "
 				info.appendChild(references)
 				
 				for (let reference of word.value.references) {
@@ -92,8 +92,8 @@ async function applySearch(response) {
 function cancelSearch(error) {
 	searchResults.innerHTML = ""
 
-	let error = document.createElement("div")
-	error.classList.add("error")
-	error.textContent = "Search failed"
-	searchResults.prepend(error)
+	let div = document.createElement("div")
+	div.classList.add("error")
+	div.textContent = "Search failed"
+	searchResults.prepend(div)
 }

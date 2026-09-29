@@ -42,9 +42,9 @@ extension WebRoutes {
 					$0.with(\.$destination)
 				}
 				.with(\.$translations)
-				.sort(\.$id, .ascending)
-				.sort(\.$type, .ascending)
 				.sort(\.$string, .ascending)
+				.sort(\.$type, .ascending)
+				.sort(\.$id, .ascending)
 				.all()
 			
 			return try await renderIndex(user: user, words: words, req: req)
@@ -54,7 +54,8 @@ extension WebRoutes {
 	private func renderIndex(user: User?, words: [Word], search: String? = nil, req: Request) async throws -> View {
 		let context = IndexContext(
 			user: try user?.toDTO(),
-			words: try words.map { try $0.toDTOWithIdentifiedRelations(on: req.db) }
+			words: try words.map { try $0.toDTOWithIdentifiedRelations(on: req.db) },
+			search: search,
 		)
 		
 		return try await req.view.render("Pages/index", context)

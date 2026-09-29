@@ -42,7 +42,7 @@ input:not(.submit-button), select {
 	color: inherit;
 }
 
-select:invalid {
+select:required:invalid {
 	color: #888;
 }
 
@@ -103,4 +103,36 @@ label.toggle:has(> input:checked) > .unchecked {
 label.toggle:has(> input:not(:checked)) > .checked {
 	/* hide the checked part if the toggle is unchecked */
 	display: none;
+}
+
+.small-button {
+	border: none;
+	border-radius: 0.3em;
+	padding: 0.2em;
+	
+	width: 1.3em;
+	height: 1.3em;
+	box-sizing: content-box;
+	
+	text-align: center;
+	align-content: center;
+	
+	color: #aaa;
+	font-weight: normal;
+	background: #222;
+	cursor: pointer;
+	text-decoration: none;
+}
+.small-button:hover {
+	color: inherit;
+}
+.small-button:active {
+	color: inherit;
+	background: #555;
+}
+.small-button.destructive:hover {
+	color: #f44;
+}
+.small-button.destructive:hover {
+	color: #f44;
 }
