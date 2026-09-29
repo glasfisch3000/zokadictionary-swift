@@ -1,0 +1,70 @@
+#extend("standard"):
+	#export("standard-head"):
+	<link rel="stylesheet" href="/css/users.css">
+	#if(success):
+	<meta http-equiv="refresh" content="1;url=#(return)"/>
+	#endif
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary - New user
+	#endexport
+	
+	#export("content"):
+	#if(success):
+	<div class="panel success">
+	User added
+	</div>
+	#else:
+	<div class="panel">
+		<form id="input-form" name="input" method="post">
+			<section>
+				<label for="username">New username</label>
+				<input id="username" type="text" required autofocus name="username" placeholder="New username" title="New username" inputmode="text"/>
+				
+				<label for="type">User type</label>
+				<select id="type" required name="type">
+					<option value="viewer" selected> Viewer </option>
+					<option value="contributor"> Contributor </option>
+					<option value="admin"> Admin </option>
+				</select>
+				
+				<label for="new-password"> New password </label>
+				<input type="password" required name="new-password" placeholder="New password" title="New password" autocomplete="new-password" inputmode="text"/>
+				
+				<label for="new-password-repeat"> Repeat new password </label>
+				<input type="password" required name="repeat-new-password" placeholder="Repeat new password" title="Repeat new password" autocomplete="new-password-repeat" inputmode="text"/>
+			</section>
+			
+			<section>
+				<label for="current-password"> Your password </label>
+				<input type="password" required name="current-password" placeholder="Your password" title="Your password" autocomplete="current-password password" inputmode="text"/>
+			</section>
+			
+			<section id="buttons" class="submit-section">
+				#if(error):
+				<div class="error">
+					#if(error == "invalidNewPassword"):
+					Invalid new password.
+					#elseif(error == "invalidNewUsername"):
+					Password incorrect.
+					#elseif(error == "nameAlreadyTaken"):
+					Password incorrect.
+					#elseif(error == "passwordIncorrect"):
+					Password incorrect.
+					#elseif(error == "passwordsDoNotMatch"):
+					Passwords do not match.
+					#else:
+					An unknown error occurred. Please contact the developer and yell at them.
+					#endif
+				</div>
+				#endif
+				
+				<input id="submit" class="submit-button" type="submit" value="Submit" title="Submit"/>
+				<a id="cancel" class="submit-button cancel" href="#(return)"> Cancel </a>
+			</section>
+		</form>
+	</div>
+	#endif
+	#endexport
+#endextend

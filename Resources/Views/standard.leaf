@@ -37,6 +37,15 @@
 		
 		<hr/>
 		
+		#if(user.value.type == "admin"):
+		<a class="dropdown-button" href="/users?return=#path">
+			<span class="symbol large-symbol"> 􀉫 </span>
+			Manage users
+		</a>
+		
+		<hr/>
+		#endif
+		
 		<a class="dropdown-button" href="/change-username?return=#path">
 			<span class="symbol"> 􀯩 </span>
 			Change username

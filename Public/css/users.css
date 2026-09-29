@@ -1,0 +1,16 @@
+.user-item:not(:first-child) {
+	margin-top: 0.7em;
+}
+.user-item:not(:last-child) {
+	margin-bottom: 0.7em;
+}
+
+.user-info {
+	font-weight: bolder;
+	padding-left: 0.3em;
+}
+.user-info .user-type {
+	font-weight: normal;
+	font-size: 80%;
+	opacity: 80%;
+}

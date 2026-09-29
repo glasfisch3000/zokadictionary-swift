@@ -1,0 +1,30 @@
+#extend("standard"):
+	#export("standard-head"):
+	<link rel="stylesheet" href="/css/users.css">
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary - Manage users
+	#endexport
+	
+	#export("content"):
+	<div class="panel">
+		<form>
+			#for(user in users):
+			<div class="user-item sub-panel removable-section">
+				<div class="user-info">
+					#(user.value.name)
+					<span class="user-type"> (#(user.value.type)) </span>
+				</div>
+				<a class="symbol small-button destructive" href="/users/#(user.id)/delete?return=#path"> 􀈑 </a>
+			</div>
+			#endfor
+			
+			<section class="submit-section">
+				<a class="submit-button" href="/users/new-user?return=#path"> Add user </button>
+				<a class="submit-button cancel" href="#(return)"> Cancel </a>
+			</section>
+		</form>
+	</div>
+	#endexport
+#endextend

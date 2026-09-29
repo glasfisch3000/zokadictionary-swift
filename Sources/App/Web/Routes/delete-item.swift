@@ -14,6 +14,11 @@ extension WebRoutes {
 			throw WebError.malformedRequest
 		}
 		
+		let user = try req.auth.require(User.self)
+		guard user.type == .admin || user.type == .contributor else {
+			throw WebError.forbidden
+		}
+		
 		guard let word = try await Word
 			.query(on: req.db)
 			.filter(\.$id == wordID)
@@ -21,13 +26,8 @@ extension WebRoutes {
 			.with(\.$references, {
 				$0.with(\.$destination)
 			})
-			.first() else {
+				.first() else {
 			throw WebError.notFound
-		}
-		
-		let user = try req.auth.require(User.self)
-		guard user.type == .admin || user.type == .contributor else {
-			throw WebError.forbidden
 		}
 		
 		let returnPath = try req.query.get(String?.self, at: "return")
@@ -40,13 +40,13 @@ extension WebRoutes {
 			throw WebError.malformedRequest
 		}
 		
-		guard let word = try await Word.find(wordID, on: req.db) else {
-			throw WebError.notFound
-		}
-		
 		let user = try req.auth.require(User.self)
 		guard user.type == .admin || user.type == .contributor else {
 			throw WebError.forbidden
+		}
+		
+		guard let word = try await Word.find(wordID, on: req.db) else {
+			throw WebError.notFound
 		}
 		
 		let returnPath = try req.query.get(String?.self, at: "return")

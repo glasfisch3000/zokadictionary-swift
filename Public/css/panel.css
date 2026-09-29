@@ -104,17 +104,17 @@
 	margin-left: auto;
 }
 
-.sub-panel .removable-section {
+.panel .removable-section {
 	display: flex;
 	align-items: center;
 }
-.sub-panel .removable-section > div {
+.panel .removable-section > div {
 	width: stretch;
 	width: -webkit-fill-available;
 }
-.sub-panel .removable-section > div:not(:last-child) {
+.panel .removable-section > div:not(:last-child) {
 	margin-right: 0.8em;
 }
-.sub-panel .removable-section > .small-button {
+.panel .removable-section > .small-button {
 	margin-left: auto;
 }

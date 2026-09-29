@@ -1,0 +1,54 @@
+#extend("standard"):
+	#export("standard-head"):
+	<link rel="stylesheet" href="/css/users.css">
+	#if(success):
+	<meta http-equiv="refresh" content="1;url=#(return)"/>
+	#endif
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary - Delete user
+	#endexport
+	
+	#export("content"):
+	#if(success):
+	<div class="panel success">
+	User deleted
+	</div>
+	#else:
+	<div class="panel">
+		<form id="delete-form" name="delete" method="post">
+			<section class="sub-panel">
+				<div class="user-info">
+					#(targetUser.value.name)
+					
+					<span class="user-type"> (#(targetUser.value.type)) </span>
+				</div>
+			</section>
+			
+			<section>
+				<label for="password"> Your password </label>
+				<input id="password" type="password" required name="password" placeholder="Your password" title="Your password" autocomplete="current-password password" inputmode="text"/>
+			</section>
+			
+			<section id="buttons" class="submit-section">
+				#if(error):
+				<div class="error">
+					#if(error == "passwordIncorrect"):
+					Password incorrect.
+					#elseif(error == "cannotDeleteSelf"):
+					Bruh don't delete yourself…
+					#else:
+					An unknown error occurred. Please contact the developer and yell at them.
+					#endif
+				</div>
+				#endif
+				
+				<input class="submit-button destructive" type="submit" value="Delete" title="Delete"/>
+				<a class="submit-button cancel" href="#(return)"> Cancel </a>
+			</section>
+		</form>
+	</div>
+	#endif
+	#endexport
+#endextend

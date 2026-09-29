@@ -42,8 +42,20 @@ struct WebRoutes: RouteCollection {
 			}
 		}
 		
-//		try routes
-//			.grouped(User.guardMiddleware(throwing: AuthError.missingLogin))
-//			.register(collection: AuthenticatedRoutes(storage: storage))
+		routes.grouped(User.guardMiddleware(throwing: AuthError.missingLogin)).group("users") { users in
+			users.get(use: getManageUsers(req:))
+			
+			users.group("new-user") {
+				$0.get(use: getNewUser(req:))
+				$0.post(use: postNewUser(req:))
+			}
+			
+			users.group(":userID") { user in
+				user.group("delete") {
+					$0.get(use: getDeleteUser(req:))
+					$0.post(use: postDeleteUser(req:))
+				}
+			}
+		}
 	}
 }
