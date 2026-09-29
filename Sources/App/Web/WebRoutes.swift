@@ -35,6 +35,11 @@ struct WebRoutes: RouteCollection {
 				$0.get(use: getEditItem(req:))
 				$0.post(use: postEditItem(req:))
 			}
+			
+			word.group("delete") {
+				$0.get(use: getDeleteItem(req:))
+				$0.post(use: postDeleteItem(req:))
+			}
 		}
 		
 //		try routes

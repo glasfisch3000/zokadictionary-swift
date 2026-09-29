@@ -1,0 +1,28 @@
+#word-title {
+	font-weight: bolder;
+	overflow-wrap: break-word;
+}
+#word-type {
+	opacity: 80%;
+	font-weight: normal;
+	font-size: 80%;
+	overflow-wrap: break-word;
+}
+
+.word-other-info {
+	margin-top: 0.3em;
+	color: #ccc;
+	font-size: 80%;
+}
+.word-other-info:not(:last-child) {
+	margin-bottom: 0.5em;
+}
+
+.word-translation, .word-reference {
+	font-weight: bolder;
+	overflow-wrap: break-word;
+	color: #eee;
+}
+.word-translation:not(:last-child)::after {
+	content: ", ";
+}
