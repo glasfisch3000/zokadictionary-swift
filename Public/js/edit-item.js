@@ -116,14 +116,20 @@ function addReference() {
 	contents.appendChild(commentInput)
 }
 
-function fetchOptions(number) {
+function fetchOptions(number, newValue) {
 	let select = document.getElementById(`reference-${number}-destination`)
 	
 	if (allWords.length > 0) {
 		appendWordOptions(allWords, select)
+		if (newValue) select.value = newValue
 	} else if (wordFetchTask) {
-		wordFetchTask.then(async (response) => {
-			await handleWordsFetchResponse(response, select)
+		wordFetchTask.then(async (words) => {
+			if (words) {
+				appendWordOptions(words, select)
+				if (newValue) select.value = newValue
+			} else {
+				reportWordFetchError("Unable to fetch words.", select)
+			}
 		})
 		.catch(() => {
 			reportWordFetchError("Unable to fetch words.", select)
@@ -139,24 +145,22 @@ function fetchOptions(number) {
 		wordFetchTask = fetch("/words", {
 			method: "GET",
 		})
-		
-		wordFetchTask.then(async (response) => {
-			await handleWordsFetchResponse(response, select)
+		.then(async (response) => {
+			if (response.ok) {
+				let words = await response.json()
+				allWords = words
+				
+				appendWordOptions(words, select)
+				if (newValue) select.value = newValue
+				return words
+			} else {
+				reportWordFetchError("Unable to fetch words.", select)
+				return null
+			}
 		})
 		.catch(() => {
 			reportWordFetchError("Unable to fetch words.", select)
 		})
-	}
-}
-
-async function handleWordsFetchResponse(response, select) {
-	if (response.ok) {
-		let words = await response.json()
-		allWords = words
-		
-		appendWordOptions(words, select)
-	} else {
-		reportWordFetchError("Unable to fetch words.", select)
 	}
 }
 

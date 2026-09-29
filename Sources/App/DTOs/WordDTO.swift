@@ -42,7 +42,7 @@ extension Word {
 		)
 	}
 	
-	func toDTOWithIdentifiedRelations(on db: any Database) throws -> Identified<DTOWithIdentifiedRelations> {
+	func toDTOWithIdentifiedRelations() throws -> Identified<DTOWithIdentifiedRelations> {
 		.init(
 			id: try self.requireID(),
 			value: .init(

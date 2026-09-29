@@ -30,6 +30,13 @@ struct WebRoutes: RouteCollection {
 			$0.post(use: postChangePassword(req:))
 		}
 		
+		routes.group("words", ":wordID") { word in
+			word.group("edit") {
+				$0.get(use: getEditItem(req:))
+				$0.post(use: postEditItem(req:))
+			}
+		}
+		
 //		try routes
 //			.grouped(User.guardMiddleware(throwing: AuthError.missingLogin))
 //			.register(collection: AuthenticatedRoutes(storage: storage))

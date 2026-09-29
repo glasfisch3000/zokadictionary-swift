@@ -1,0 +1,85 @@
+#extend("standard"):
+	#export("standard-head"):
+	<script src="/js/edit-item.js"></script>
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary - Edit Word
+	#endexport
+	
+	#export("content"):
+	<div class="panel success" id="submit-success" hidden>
+	Word updated
+	</div>
+	
+	<div class="panel">
+		<form id="input-form" name="input" method="post">
+			<section>
+				<label for="string">Word</label>
+				<input id="string" type="text" required autofocus name="string" placeholder="Word" title="Word" inputmode="text" value="#(word.value.string)"/>
+				
+				<label for="type">Type</label>
+				<select id="type" name="type" required value="#(word.value.type)">
+					<option value="adjective"> Adjective </option>
+					<option value="noun"> Noun </option>
+					<option value="number"> Number </option>
+					<option value="particle"> Particle </option>
+					<option value="preposition"> Preposition </option>
+					<option value="questionWord"> Question word </option>
+					<option value="verb"> Verb </option>
+				</select>
+			</section>
+			
+			<section class="sub-panel" id="translations">
+				<div class="sub-panel-title">
+					Translations:
+					
+					<button class="symbol small-button" type="button" onClick="addTranslation()">􀅼</button>
+				</div>
+				
+				#for(translation in word.value.translations):
+				<section class="removable-section" id="translation-#(translation.id)">
+					<div>
+						<label for="translation-#(translation.id)-value"> Translation </label>
+						<input id="translation-#(translation.id)-value" class="translation-input" type="text" inputmode="text" placeholder="Translation" title="Translation" value="#(translation.value.translation)"/>
+						
+						<label for="translation-#(translation.id)-comment"> Comment </label>
+						<input id="translation-#(translation.id)-comment" class="translation-comment-input" type="text" inputmode="text" placeholder="Comment" title="Comment" value="#(translation.value.comment)"/>
+					</div>
+					<button class="symbol small-button destructive" type="button" onClick="removeTranslation(#(translation.id))"> 􀆄 </button>
+				</section>
+				#endfor
+			</section>
+			
+			<section class="sub-panel" id="references">
+				<div class="sub-panel-title">
+					See also:
+					
+					<button class="symbol small-button" type="button" onClick="addReference()">􀅼</button>
+				</div>
+				
+				#for(reference in word.value.references):
+				<section class="removable-section" id="reference-#(reference.id)">
+					<div>
+						<label for="reference-#(reference.id)-destination"> Translation </label>
+						<select id="reference-#(reference.id)-destination" class="reference-select"/>
+						<script> fetchOptions("#(reference.id)", "#(reference.value.destination.id)") </script>
+						
+						<label for="reference-#(reference.id)-comment"> Comment </label>
+						<input id="reference-#(reference.id)-comment" class="reference-comment-input" type="text" inputmode="text" placeholder="Comment" title="Comment" value="#(reference.value.comment)"/>
+					</div>
+					<button class="symbol small-button destructive" type="button" onClick="removeReference(#(reference.id))"> 􀆄 </button>
+				</section>
+				#endfor
+			</section>
+			
+			<section class="submit-section">
+				<div class="error" id="submit-error" hidden></div>
+				
+				<button id="submit" class="submit-button" type="button" onClick="submitNewItem()"> Submit </button>
+				<a class="submit-button cancel" href="#(return)"> Cancel </a>
+			</section>
+		</form>
+	</div>
+	#endexport
+#endextend

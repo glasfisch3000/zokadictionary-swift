@@ -54,7 +54,7 @@ extension WebRoutes {
 	private func renderIndex(user: User?, words: [Word], search: String? = nil, req: Request) async throws -> View {
 		let context = IndexContext(
 			user: try user?.toDTO(),
-			words: try words.map { try $0.toDTOWithIdentifiedRelations(on: req.db) },
+			words: try words.map { try $0.toDTOWithIdentifiedRelations() },
 			search: search,
 		)
 		
@@ -89,7 +89,7 @@ extension WebRoutes {
 				.all()
 		}
 		
-		return try results.map { try $0.toDTOWithIdentifiedRelations(on: req.db) }
+		return try results.map { try $0.toDTOWithIdentifiedRelations() }
 	}
 }
 
