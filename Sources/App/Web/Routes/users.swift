@@ -174,14 +174,14 @@ extension WebRoutes {
 		}
 		
 		guard user.verifyPassword(dto.currentPassword) else {
-			return try await renderNewUser(error: .passwordsDoNotMatch, return: returnPath, user: user, req: req)
+			return try await renderNewUser(error: .passwordIncorrect, return: returnPath, user: user, req: req)
 		}
 		
 		guard try await User
 			.query(on: req.db)
 			.filter(\.$name == dto.username)
 			.first() == nil else {
-			return try await renderNewUser(error: .passwordsDoNotMatch, return: returnPath, user: user, req: req)
+			return try await renderNewUser(error: .nameAlreadyTaken, return: returnPath, user: user, req: req)
 		}
 		
 		let newUser = User(name: dto.username, type: dto.type, password: dto.newPassword)
