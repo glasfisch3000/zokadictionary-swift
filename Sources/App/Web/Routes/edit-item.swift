@@ -25,6 +25,10 @@ extension WebRoutes {
 		}
 		
 		let user = try req.auth.require(User.self)
+		guard user.type == .admin || user.type == .contributor else {
+			throw WebError.forbidden
+		}
+		
 		let returnPath = try req.query.get(String?.self, at: "return")
 		
 		let context = Context(
@@ -52,7 +56,11 @@ extension WebRoutes {
 			throw WebError.notFound
 		}
 		
-		try req.auth.require(User.self)
+		let user = try req.auth.require(User.self)
+		guard user.type == .admin || user.type == .contributor else {
+			throw WebError.forbidden
+		}
+		
 		let dto = try req.content.decode(DTO.self)
 		
 		if dto.string.isEmpty {

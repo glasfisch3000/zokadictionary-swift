@@ -26,6 +26,10 @@ extension WebRoutes {
 		}
 		
 		let user = try req.auth.require(User.self)
+		guard user.type == .admin || user.type == .contributor else {
+			throw WebError.forbidden
+		}
+		
 		let returnPath = try req.query.get(String?.self, at: "return")
 		
 		return try await renderDeleteItem(word: word, return: returnPath, user: user, req: req)
@@ -41,6 +45,10 @@ extension WebRoutes {
 		}
 		
 		let user = try req.auth.require(User.self)
+		guard user.type == .admin || user.type == .contributor else {
+			throw WebError.forbidden
+		}
+		
 		let returnPath = try req.query.get(String?.self, at: "return")
 		
 		try await req.db.transaction { db in
