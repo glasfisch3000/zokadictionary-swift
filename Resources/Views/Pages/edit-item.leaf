@@ -4,7 +4,7 @@
 	#endexport
 	
 	#export("title"):
-	ZokaDictionary - Edit Word
+	ZokaDictionary - Edit word
 	#endexport
 	
 	#export("content"):
