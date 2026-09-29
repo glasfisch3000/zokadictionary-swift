@@ -30,6 +30,10 @@ extension WebRoutes {
 		try req.auth.require(User.self)
 		let dto = try req.content.decode(DTO.self)
 		
+		if dto.string.isEmpty {
+			return false
+		}
+		
 		try await req.db.transaction { db in
 			let word = Word(string: dto.string, type: dto.type)
 			try await word.create(on: db)

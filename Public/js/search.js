@@ -84,7 +84,7 @@ async function applySearch(response) {
 	} else {
 		let error = document.createElement("div")
 		error.classList.add("error")
-		error.textContent = "Search failed"
+		error.textContent = "Search failed."
 		searchResults.prepend(error)
 	}
 }
@@ -94,6 +94,6 @@ function cancelSearch(error) {
 
 	let div = document.createElement("div")
 	div.classList.add("error")
-	div.textContent = "Search failed"
+	div.textContent = "Search failed."
 	searchResults.prepend(div)
 }

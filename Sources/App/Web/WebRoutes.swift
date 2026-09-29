@@ -20,6 +20,11 @@ struct WebRoutes: RouteCollection {
 			$0.post(use: postNewItem(req:))
 		}
 		
+		routes.group("change-username") {
+			$0.get(use: getChangeUsername(req:))
+			$0.post(use: postChangeUsername(req:))
+		}
+		
 //		try routes
 //			.grouped(User.guardMiddleware(throwing: AuthError.missingLogin))
 //			.register(collection: AuthenticatedRoutes(storage: storage))

@@ -108,11 +108,11 @@ function addReference() {
 				allWords = words
 				appendWordOptions(words, referenceSelect)
 			} else {
-				reportWordFetchError("Unable to fetch words", referenceSelect)
+				reportWordFetchError("Unable to fetch words.", referenceSelect)
 			}
 		})
 		.catch(() => {
-			reportWordFetchError("Unable to fetch words", referenceSelect)
+			reportWordFetchError("Unable to fetch words.", referenceSelect)
 		})
 	} else {
 		let option = document.createElement("option")
@@ -132,11 +132,11 @@ function addReference() {
 				allWords = words
 				appendWordOptions(words, referenceSelect)
 			} else {
-				reportWordFetchError("Unable to fetch words", referenceSelect)
+				reportWordFetchError("Unable to fetch words.", referenceSelect)
 			}
 		})
 		.catch(() => {
-			reportWordFetchError("Unable to fetch words", referenceSelect)
+			reportWordFetchError("Unable to fetch words.", referenceSelect)
 		})
 	}
 	
@@ -242,7 +242,7 @@ async function submitNewItem() {
 			body: JSON.stringify(data)
 		})
 
-		if (response.ok) {
+		if (response.ok && await response.json()) {
 			success.hidden = false
 			error.hidden = true
 			
@@ -250,12 +250,12 @@ async function submitNewItem() {
 		} else {
 			success.hidden = true
 			error.hidden = false
-			error.textContent = "Request failed"
+			error.textContent = "Request failed."
 		}
 	} catch {
 		success.hidden = true
 		error.hidden = false
-		error.textContent = "Unable to send request"
+		error.textContent = "Unable to send request."
 	}
 }
 

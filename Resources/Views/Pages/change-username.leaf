@@ -1,0 +1,50 @@
+#extend("standard"):
+	#export("standard-head"):
+	#if(success):
+	<meta http-equiv="refresh" content="1;url=#(return)"/>
+	#endif
+	#endexport
+	
+	#export("title"):
+	ZokaDictionary - Change username
+	#endexport
+	
+	#export("content"):
+	#if(success):
+	<div class="panel success">
+	New username set
+	</div>
+	#else:
+	<div class="panel">
+		<form id="username-form" name="change-username" method="post">
+			<section>
+				<label for="new-username"> New username </label>
+				<input type="text" required name="new-username" placeholder="New username" title="New username" inputmode="text"/>
+				
+				<label for="password"> Password </label>
+				<input type="password" required name="password" placeholder="Password" title="Password" autocomplete="current-password password" inputmode="text"/>
+			</section>
+			
+			<section class="submit-section">
+				#if(error):
+				<div class="error">
+					#if(error == "invalidName"):
+					Invalid username.
+					#elseif(error == "nameAlreadyTaken"):
+					Username is already taken, try another one.
+					#elseif(error == "passwordIncorrect"):
+					Password incorrect.
+					#else:
+					An unknown error occurred. Please contact the developer and yell at them.
+					#endif
+				</div>
+				#endif
+				
+				<input id="submit" class="submit-button" type="submit" value="Submit" title="Submit"/>
+				<a id="cancel" class="submit-button cancel" href="#(return)"> Cancel </a>
+			</section>
+		</form>
+	</div>
+	#endif
+	#endexport
+#endextend
