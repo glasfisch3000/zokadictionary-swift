@@ -40,6 +40,7 @@ function addTranslation() {
 	translationInput.setAttribute("inputmode", "text")
 	translationInput.required = true
 	contents.appendChild(translationInput)
+	translationInput.focus()
 	
 	
 	let commentLabel = document.createElement("label")
@@ -99,6 +100,7 @@ function addReference() {
 	referenceSelect.required = true
 	contents.appendChild(referenceSelect)
 	fetchOptions(number)
+	referenceSelect.focus()
 	
 	
 	let commentLabel = document.createElement("label")
