@@ -15,6 +15,9 @@ final class Translation: Model, @unchecked Sendable {
     
     @Parent(key: "word_id")
     var word: Word
+	
+	@Timestamp(key: "deleted_at", on: .delete)
+	var deleted: Date?
     
     init() { }
     
