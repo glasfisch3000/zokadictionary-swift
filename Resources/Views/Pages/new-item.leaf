@@ -1,6 +1,6 @@
 #extend("standard"):
 	#export("standard-head"):
-	<script src="/js/new-item.js"></script>
+	<script src="/js/edit-item.js"></script>
 	#endexport
 	
 	#export("title"):
