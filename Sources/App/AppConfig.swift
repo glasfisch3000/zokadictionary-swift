@@ -18,9 +18,9 @@ struct AppConfig: Sendable {
 		AppConfig(
 			databaseHost: Environment.get("DATABASE_HOST") ?? "localhost",
 			databasePort: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
-			databaseName: Environment.get("DATABASE_NAME") ?? "vapor_database",
-			databaseUsername: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
-			databasePassword: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
+			databaseName: Environment.get("DATABASE_NAME") ?? "zokadictionary",
+			databaseUsername: Environment.get("DATABASE_USERNAME") ?? "zokadictionary",
+			databasePassword: Environment.get("DATABASE_PASSWORD") ?? "zokadictionary",
 			sessionLifetime: Environment.get("SESSION_LIFETIME").flatMap(TimeInterval.init(_:)) ?? 60*60*24*7, // 7 days by default
 			adminUsername: Environment.get("ADMIN_USERNAME") ?? "admin",
 			adminPassword: Environment.get("ADMIN_PASSWORD") ?? "admin",
