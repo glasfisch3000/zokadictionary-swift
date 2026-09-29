@@ -25,6 +25,11 @@ struct WebRoutes: RouteCollection {
 			$0.post(use: postChangeUsername(req:))
 		}
 		
+		routes.group("change-password") {
+			$0.get(use: getChangePassword(req:))
+			$0.post(use: postChangePassword(req:))
+		}
+		
 //		try routes
 //			.grouped(User.guardMiddleware(throwing: AuthError.missingLogin))
 //			.register(collection: AuthenticatedRoutes(storage: storage))
