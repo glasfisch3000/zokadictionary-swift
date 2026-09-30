@@ -179,6 +179,7 @@ function appendWordOptions(words, select) {
 	for (let word of words) {
 		let option = document.createElement("option")
 		option.setAttribute("value", word.id)
+		option.setAttribute("wordType", word.value.type)
 		option.textContent = `${word.value.string} (${describeWordType(word.value.type)})`
 		select.appendChild(option)
 	}

@@ -22,7 +22,7 @@
 				<div id="word-title">
 					#(word.value.string)
 					
-					<span id="word-type"> (#describeWordType(word.value.type)) </span>
+					<span id="word-type" wordType="#(word.value.type)"> (#describeWordType(word.value.type)) </span>
 				</div>
 				
 				#if(count(word.value.translations) > 0):

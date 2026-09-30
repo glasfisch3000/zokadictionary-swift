@@ -51,6 +51,7 @@ async function applySearch(response) {
 			let type = document.createElement("span")
 			type.classList.add("item-type")
 			type.textContent = ` (${describeWordType(word.value.type)})`
+			type.setAttribute("wordType", word.value.type)
 			title.appendChild(type)
 			
 			if (word.value.translations.length > 0) {

@@ -28,7 +28,7 @@
 			<div class="title">
 				<a href="/words/#(word.id)">
 					#(word.value.string)
-					<span class="type"> (#describeWordType(word.value.type)) </span>
+					<span class="type" wordType="#(word.value.type)"> (#describeWordType(word.value.type)) </span>
 				</a>
 				
 				#if(user.value.type == "admin" || user.value.type == "contributor"):
@@ -63,7 +63,10 @@
 				#for(reference in word.value.references):
 				<div class="reference">
 					<a href="\#word-#(reference.value.destination.id)">
-						#(reference.value.destination.value.string)
+						<span wordType="#(reference.value.destination.value.type)">
+							#(reference.value.destination.value.string)
+						</span>
+						
 						#if(reference.value.comment):
 						<span class="comment"> (#(reference.value.comment)) </span>
 						#endif

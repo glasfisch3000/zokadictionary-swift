@@ -21,13 +21,13 @@
 				<label for="type">Type</label>
 				<select id="type" name="type" required>
 					<option value="" selected disabled> Select a word type </option>
-					<option value="adjective"> Adjective </option>
-					<option value="noun"> Noun </option>
-					<option value="number"> Number </option>
-					<option value="particle"> Particle </option>
-					<option value="preposition"> Preposition </option>
-					<option value="questionWord"> Question word </option>
-					<option value="verb"> Verb </option>
+					<option wordType="adjective" value="adjective"> Adjective </option>
+					<option wordType="noun" value="noun"> Noun </option>
+					<option wordType="number" value="number"> Number </option>
+					<option wordType="particle" value="particle"> Particle </option>
+					<option wordType="preposition" value="preposition"> Preposition </option>
+					<option wordType="questionWord" value="questionWord"> Question word </option>
+					<option wordType="verb" value="verb"> Verb </option>
 				</select>
 			</section>
 			

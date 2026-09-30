@@ -136,3 +136,25 @@ label.toggle:has(> input:not(:checked)) > .checked {
 .small-button.destructive:hover {
 	color: #f44;
 }
+
+*[wordType=adjective], select:has(> option:checked[value=adjective]) {
+	color: #0cf;
+}
+*[wordType=noun], select:has(> option:checked[value=noun]) {
+	color: #ff2;
+}
+*[wordType=number], select:has(> option:checked[value=number]) {
+	color: #0fd;
+}
+*[wordType=particle], select:has(> option:checked[value=particle]) {
+	color: inherit;
+}
+*[wordType=preposition], select:has(> option:checked[value=preposition]) {
+	color: #f83;
+}
+*[wordType=questionWord], select:has(> option:checked[value=questionWord]) {
+	color: #e7f;
+}
+*[wordType=verb], select:has(> option:checked[value=verb]) {
+	color: #5e2;
+}
