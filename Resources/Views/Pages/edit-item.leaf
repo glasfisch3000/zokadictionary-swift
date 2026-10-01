@@ -1,5 +1,7 @@
 #extend("standard"):
 	#export("standard-head"):
+	<script> returnAddress = "#(return)" </script>
+	<script src="/js/editor.js"></script>
 	<script src="/js/edit-item.js"></script>
 	#endexport
 	
@@ -19,14 +21,14 @@
 				<input id="string" type="text" required autofocus name="string" placeholder="Word" title="Word" inputmode="text" value="#(word.value.string)"/>
 				
 				<label for="type">Type</label>
-				<select id="type" name="type" required value="#(word.value.type)">
-					<option wordType="adjective" value="adjective"> Adjective </option>
-					<option wordType="noun" value="noun"> Noun </option>
-					<option wordType="number" value="number"> Number </option>
-					<option wordType="particle" value="particle"> Particle </option>
-					<option wordType="preposition" value="preposition"> Preposition </option>
-					<option wordType="questionWord" value="questionWord"> Question word </option>
-					<option wordType="verb" value="verb"> Verb </option>
+				<select id="type" name="type" required>
+					<option #if(word.value.type=="adjective"): selected #endif wordType="adjective" value="adjective"> Adjective </option>
+					<option #if(word.value.type=="noun"): selected #endif wordType="noun" value="noun"> Noun </option>
+					<option #if(word.value.type=="number"): selected #endif wordType="number" value="number"> Number </option>
+					<option #if(word.value.type=="particle"): selected #endif wordType="particle" value="particle"> Particle </option>
+					<option #if(word.value.type=="preposition"): selected #endif wordType="preposition" value="preposition"> Preposition </option>
+					<option #if(word.value.type=="questionWord"): selected #endif wordType="questionWord" value="questionWord"> Question word </option>
+					<option #if(word.value.type=="verb"): selected #endif wordType="verb" value="verb"> Verb </option>
 				</select>
 			</section>
 			
