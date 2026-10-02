@@ -1,6 +1,6 @@
 .swiftpm/
+.build/
 .git/
 .gitignore
 .dockerignore
 Dockerfile
-.dockerignore
