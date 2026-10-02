@@ -14,7 +14,7 @@
 	Word updated
 	</div>
 	
-	<div class="panel">
+	<div class="panel" id="input-panel">
 		<form id="input-form" name="input" method="post">
 			<section>
 				<label for="string">Word</label>

@@ -1,5 +1,6 @@
 function handleSuccess() {
 	document.getElementById("input-form").reset()
+	document.getElementById("string").focus()
 	
 	let sectionsToRemove = []
 	for (let section of document.getElementById("translations").children) {
