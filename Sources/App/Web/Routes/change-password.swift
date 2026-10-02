@@ -23,7 +23,7 @@ extension WebRoutes {
 	}
 	
 	func postChangePassword(req: Request) async throws -> View {
-		struct Data: Codable {
+		struct DTO: Codable {
 			enum CodingKeys: String, CodingKey {
 				case newPassword = "new-password"
 				case repeatNewPassword = "repeat-new-password"
@@ -37,7 +37,7 @@ extension WebRoutes {
 		
 		let user = try req.auth.require(User.self)
 		let returnPath = try req.query.get(String?.self, at: "return")
-		let data = try req.content.decode(Data.self)
+		let data = try req.content.decode(DTO.self)
 		
 		guard user.verifyPassword(data.password) ?? user.verifyPasswordOld(data.password) else {
 			return try await renderChangePassword(error: .passwordIncorrect, return: returnPath, user: user, req: req)
@@ -47,7 +47,7 @@ extension WebRoutes {
 			return try await renderChangePassword(error: .invalidNewPassword, return: returnPath, user: user, req: req)
 		}
 		
-		guard data.newPassword == data.repeatNewPassword else {
+		guard data.newPassword.elementsEqual(data.repeatNewPassword) else {
 			return try await renderChangePassword(error: .passwordsDoNotMatch, return: returnPath, user: user, req: req)
 		}
 		

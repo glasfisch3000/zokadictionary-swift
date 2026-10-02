@@ -161,7 +161,7 @@ extension WebRoutes {
 		// add initial matches
 		matches += string
 			.indexed()
-			.compactMap { index, element in
+			.compactMap { index, element -> Match? in
 				guard element.starts(with: tokens[tokenIndex]) else {
 					return nil
 				}
@@ -170,7 +170,7 @@ extension WebRoutes {
 			}
 		matches += translations
 			.indexed()
-			.compactMap { index, element in
+			.compactMap { index, element -> Match? in
 				guard element.starts(with: tokens[tokenIndex]) else {
 					return nil
 				}
@@ -179,7 +179,7 @@ extension WebRoutes {
 			}
 		matches += type
 			.indexed()
-			.compactMap { index, element in
+			.compactMap { index, element -> Match? in
 				guard element.starts(with: tokens[tokenIndex]) else {
 					return nil
 				}
@@ -188,7 +188,7 @@ extension WebRoutes {
 			}
 		matches += references
 			.indexed()
-			.compactMap { index, element in
+			.compactMap { index, element -> Match? in
 				guard element.starts(with: tokens[tokenIndex]) else {
 					return nil
 				}

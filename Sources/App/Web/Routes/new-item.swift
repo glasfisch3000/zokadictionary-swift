@@ -47,13 +47,13 @@ extension WebRoutes {
 			try await word.create(on: db)
 			let wordID = try word.requireID()
 			
-			let translations = dto.translations.map {
-				Translation(translation: $0.translation, comment: $0.comment.flatMap { $0.isEmpty ? nil : $0 }, wordID: wordID)
+			let translations = dto.translations.map { dto -> Translation in
+				Translation(translation: dto.translation, comment: dto.comment.flatMap { $0.isEmpty ? nil : $0 }, wordID: wordID)
 			}
 			try await translations.create(on: db)
 			
-			let references = dto.references.map {
-				Reference(sourceID: wordID, destinationID: $0.destinationID, comment: $0.comment.flatMap { $0.isEmpty ? nil : $0 })
+			let references = dto.references.map { dto -> Reference in
+				Reference(sourceID: wordID, destinationID: dto.destinationID, comment: dto.comment.flatMap { $0.isEmpty ? nil : $0 })
 			}
 			try await references.create(on: db)
 		}
