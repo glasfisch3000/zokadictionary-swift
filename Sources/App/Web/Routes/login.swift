@@ -25,22 +25,29 @@ extension WebRoutes {
 		}
 		
 		let credentials = try req.content.decode(Credentials.self)
-		let returnAddress = try req.query.get(String?.self, at: "return")
+		let returnPath = try req.query.get(String?.self, at: "return")
 		
 		guard let user = try await User
 			.query(on: req.db)
 			.filter(\.$name == credentials.username)
 			.first() else {
-			return try await renderLogin(error: .invalidLoginData, return: returnAddress, req: req)
+			return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
 		}
 		
-		guard user.verifyPassword(credentials.password) else {
-			return try await renderLogin(error: .invalidLoginData, return: returnAddress, req: req)
+		switch user.verifyPassword(credentials.password) {
+		case true: break
+		case false: return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
+		case nil:
+			guard user.verifyPasswordOld(credentials.password) else {
+				return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
+			}
+			
+			user.passwordHash = try User.hashPassword(credentials.password)
 		}
 		
 		req.session.authenticate(user)
 		
-		return try await renderLogin(success: true, return: returnAddress, req: req)
+		return try await renderLogin(success: true, return: returnPath, req: req)
 	}
 	
 	private func renderLogin(success: Bool = false, error: AuthError? = nil, return: String?, req: Request) async throws -> View {

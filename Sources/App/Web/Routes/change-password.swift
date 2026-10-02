@@ -39,7 +39,7 @@ extension WebRoutes {
 		let returnPath = try req.query.get(String?.self, at: "return")
 		let data = try req.content.decode(Data.self)
 		
-		guard user.verifyPassword(data.password) else {
+		guard user.verifyPassword(data.password) ?? user.verifyPasswordOld(data.password) else {
 			return try await renderChangePassword(error: .passwordIncorrect, return: returnPath, user: user, req: req)
 		}
 		
@@ -51,7 +51,8 @@ extension WebRoutes {
 			return try await renderChangePassword(error: .passwordsDoNotMatch, return: returnPath, user: user, req: req)
 		}
 		
-		user.password = User.hashPassword(data.newPassword, salt: user.salt)
+		user.passwordOld = User.hashPasswordOld(data.newPassword, salt: user.saltOld)
+		user.passwordHash = try User.hashPassword(data.newPassword)
 		try await user.update(on: req.db)
 		
 		return try await renderChangePassword(success: true, return: returnPath, user: user, req: req)

@@ -21,9 +21,9 @@ final class Reference: Model, @unchecked Sendable {
     
     init() { }
     
-    init(id: UUID? = nil, sourceID: Word.IDValue?, destinationID: Word.IDValue, comment: String? = nil) {
+    init(id: UUID? = nil, sourceID: Word.IDValue, destinationID: Word.IDValue, comment: String? = nil) {
         self.id = id
-        if let sourceID = sourceID { self.$source.id = sourceID }
+        self.$source.id = sourceID
         self.$destination.id = destinationID
         self.comment = comment
     }
