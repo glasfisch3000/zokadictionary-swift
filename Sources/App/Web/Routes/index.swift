@@ -86,6 +86,9 @@ extension WebRoutes {
 					$0.with(\.$destination)
 				}
 				.with(\.$translations)
+				.sort(\.$string, .ascending)
+				.sort(\.$type, .ascending)
+				.sort(\.$id, .ascending)
 				.all()
 		}
 		
