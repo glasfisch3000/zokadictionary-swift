@@ -2,7 +2,7 @@ import Fluent
 import struct Foundation.Data
 import struct Foundation.UUID
 import Crypto
-import Sodium
+import Argon2Swift
 import Vapor
 
 final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
@@ -50,20 +50,13 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
 
 // better password hashing
 extension User {
-	struct PasswordHashingError: Error { }
-	
-	static func hashPassword(_ password: String) throws(PasswordHashingError) -> String {
-		let sodium = Sodium().pwHash
-		if let hash = sodium.str(passwd: password.bytes, opsLimit: sodium.OpsLimitInteractive, memLimit: sodium.MemLimitInteractive) {
-			return hash
-		} else {
-			throw PasswordHashingError()
-		}
+	static func hashPassword(_ password: String) throws -> String {
+		let salt = Salt.newSalt()
+		return try Argon2Swift.hashPasswordString(password: password, salt: salt, type: .id).encodedString()
 	}
 	
-	func verifyPassword(_ passwordToCheck: String) -> Bool? {
-		let sodium = Sodium().pwHash
-		return self.passwordHash.map { sodium.strVerify(hash: $0, passwd: passwordToCheck.bytes) }
+	func verifyPassword(_ passwordToCheck: String) throws -> Bool? {
+		try self.passwordHash.map { try Argon2Swift.verifyHashString(password: passwordToCheck, hash: $0, type: .id) }
 	}
 }
 

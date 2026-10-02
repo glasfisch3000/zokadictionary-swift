@@ -84,7 +84,7 @@ extension WebRoutes {
 		let returnPath = try req.query.get(String?.self, at: "return")
 		let data = try req.content.decode(Data.self)
 		
-		guard user.verifyPassword(data.password) ?? user.verifyPasswordOld(data.password) else {
+		guard try user.verifyPassword(data.password) ?? user.verifyPasswordOld(data.password) else {
 			return try await renderDeleteUser(error: .passwordIncorrect, targetUser: targetUser, return: returnPath, user: user, req: req)
 		}
 		if try user.requireID() == userID {
@@ -173,7 +173,7 @@ extension WebRoutes {
 			return try await renderNewUser(error: .passwordsDoNotMatch, return: returnPath, user: user, req: req)
 		}
 		
-		guard user.verifyPassword(dto.currentPassword) ?? user.verifyPasswordOld(dto.currentPassword) else {
+		guard try user.verifyPassword(dto.currentPassword) ?? user.verifyPasswordOld(dto.currentPassword) else {
 			return try await renderNewUser(error: .passwordIncorrect, return: returnPath, user: user, req: req)
 		}
 		
