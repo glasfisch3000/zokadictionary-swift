@@ -202,7 +202,11 @@ function removeReference(number) {
 }
 
 
-async function submitNewItem() {
+async function submitItem() {
+	let button = document.getElementById("submit")
+	button.disabled = true
+	button.textContent = "Sending data…"
+	
 	let string = document.getElementById("string").value
 	let type = document.getElementById("type").value
 
@@ -255,16 +259,25 @@ async function submitNewItem() {
 		})
 
 		if (response.ok && await response.json()) {
+			button.disabled = false
+			button.textContent = "Submit"
+			
 			success.hidden = false
 			error.hidden = true
 			
 			handleSuccess()
 		} else {
+			button.disabled = false
+			button.textContent = "Submit"
+			
 			success.hidden = true
 			error.hidden = false
 			error.textContent = "Request failed."
 		}
 	} catch {
+		button.disabled = false
+		button.textContent = "Submit"
+		
 		success.hidden = true
 		error.hidden = false
 		error.textContent = "Unable to send request."

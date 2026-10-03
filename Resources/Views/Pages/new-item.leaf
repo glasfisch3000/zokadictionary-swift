@@ -51,7 +51,7 @@
 			<section class="submit-section">
 				<div class="error" id="submit-error" hidden></div>
 				
-				<button id="submit" class="submit-button" type="button" onClick="submitNewItem()"> Submit </button>
+				<button id="submit" class="submit-button" type="button" onClick="submitItem()"> Submit </button>
 				<a class="submit-button cancel" href="#(return)"> Cancel </a>
 			</section>
 		</form>

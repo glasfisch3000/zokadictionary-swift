@@ -47,7 +47,7 @@
 	margin-bottom: 1em;
 }
 
-.panel > form:has(:is(input,select):required:invalid) :is(input[type=submit],button.submit-button) {
+.panel > form:has(:is(input,select):required:invalid) :is(input[type=submit],button.submit-button), :is(input[type=submit],button.submit-button):disabled {
 	/* Make the submit button look disabled if the form's input/select is invalid */
 	border-color: #80808080;
 	background-color: #3333;
