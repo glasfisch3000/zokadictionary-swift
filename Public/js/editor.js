@@ -1,6 +1,8 @@
 let translationNumber = 0
 let referenceNumber = 0
+
 let wordFetchTask = null
+let allWords = []
 
 function addTranslation() {
 	let translations = document.getElementById("translations")
@@ -64,7 +66,6 @@ function removeTranslation(number) {
 }
 
 
-let allWords = []
 function addReference() {
 	let references = document.getElementById("references")
 	
@@ -265,6 +266,7 @@ async function submitItem() {
 			success.hidden = false
 			error.hidden = true
 			
+			allWords = []
 			handleSuccess()
 		} else {
 			button.disabled = false
