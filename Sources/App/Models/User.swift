@@ -18,12 +18,6 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
     
     @Enum(key: "user_type")
     var type: UserType
-    
-    @Field(key: "salt")
-    var saltOld: UUID?
-    
-    @Field(key: "password")
-    var passwordOld: Data?
 	
 	@Field(key: "password_hash_argon2")
 	var passwordHash: String
@@ -36,23 +30,8 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
         self.type = type
 		self.passwordHash = try await Self.hashPassword(password)
     }
-    
-    static func hashPasswordOld(_ password: String, salt: UUID) -> Data {
-        var hasher = SHA256()
-		hasher.update(data: Data(password.utf8))
-		hasher.update(data: Data(salt.uuidString.utf8))
-        return Data(hasher.finalize())
-    }
-	
-	func verifyPasswordOld(_ passwordToCheck: String) -> Bool? {
-		guard let passwordOld, let saltOld else {
-			return nil
-		}
-		return Self.hashPasswordOld(passwordToCheck, salt: saltOld).elementsEqual(passwordOld)
-	}
 }
 
-// better password hashing
 extension User {
 	enum PasswordHashingError: Error {
 		case unableToGenerateRandomSalt

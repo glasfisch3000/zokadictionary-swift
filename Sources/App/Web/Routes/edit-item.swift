@@ -15,10 +15,10 @@ extension WebRoutes {
 		
 		guard let word = try await Word
 			.query(on: req.db)
-			.filter(\.$id == wordID)
-			.with(\.$translations)
-			.with(\.$references, {
-				$0.with(\.$destination)
+			.filter(\Word.$id == wordID)
+			.with(\Word.$translations)
+			.with(\Word.$references, {
+				$0.with(\Reference.$destination)
 			})
 			.first() else {
 			throw WebError.notFound

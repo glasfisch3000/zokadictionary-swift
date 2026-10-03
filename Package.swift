@@ -27,7 +27,7 @@ let package = Package(
 				.product(name: "SwiftArgon2", package: "argon2-swift"),
             ],
 			swiftSettings: [
-				.unsafeFlags(["-Xfrontend", "-warn-long-function-bodies=50"], .when(configuration: .debug)),
+				.unsafeFlags(["-Xfrontend", "-warn-long-function-bodies=100"], .when(configuration: .debug)),
 			]
         ),
     ]
