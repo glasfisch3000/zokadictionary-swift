@@ -60,17 +60,10 @@ extension User {
 	}
 	
 	static func hashPassword(_ password: String, salt: Data? = nil) async throws -> String {
-		let saltData: Data
-		if let salt {
-			saltData = salt
+		let saltData = if let salt {
+			salt
 		} else {
-			let saltLength = 32
-			var bytes = [UInt8](repeating: 0, count: saltLength)
-			
-			guard SecRandomCopyBytes(kSecRandomDefault, saltLength, &bytes) == 0 else {
-				throw PasswordHashingError.unableToGenerateRandomSalt
-			}
-			saltData = Data(bytes)
+			Data([UInt8].random(count: 32))
 		}
 		
 		return try await argon.computeEncoded(password: Data(password.utf8), salt: saltData)
