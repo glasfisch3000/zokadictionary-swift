@@ -30,12 +30,13 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
     
     init() { }
 
-    init(id: UUID? = nil, name: String, type: UserType, salt: UUID = UUID(), password: String) {
+    init(id: UUID? = nil, name: String, type: UserType, salt: UUID = UUID(), password: String) async throws {
         self.id = id
         self.name = name
         self.type = type
         self.saltOld = salt
         self.passwordOld = Self.hashPasswordOld(password, salt: salt)
+		self.passwordHash = try await Self.hashPassword(password)
     }
     
     static func hashPasswordOld(_ password: String, salt: UUID) -> Data {

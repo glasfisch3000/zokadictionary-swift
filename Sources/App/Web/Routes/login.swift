@@ -43,6 +43,7 @@ extension WebRoutes {
 			}
 			
 			user.passwordHash = try await User.hashPassword(credentials.password)
+			try await user.update(on: req.db)
 		}
 		
 		req.session.authenticate(user)

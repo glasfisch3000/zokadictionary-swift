@@ -184,7 +184,7 @@ extension WebRoutes {
 			return try await renderNewUser(error: .nameAlreadyTaken, return: returnPath, user: user, req: req)
 		}
 		
-		let newUser = User(name: dto.username, type: dto.type, password: dto.newPassword)
+		let newUser = try await User(name: dto.username, type: dto.type, password: dto.newPassword)
 		try await newUser.create(on: req.db)
 		
 		return try await renderNewUser(success: true, return: returnPath, user: user, req: req)

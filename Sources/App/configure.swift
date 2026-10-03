@@ -27,6 +27,8 @@ public func configureDB(_ app: Application) async throws {
 	app.migrations.add(UpdateUserType())
 	app.migrations.add(AddSoftDeleteTranslationsAndReferences())
 	app.migrations.add(AddArgon2PasswordHashing())
+	
+	app.migrations.add(CreateAdminUser())
 }
 
 func configureRoutes(_ app: Application) throws {
