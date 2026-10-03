@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "zokadictionary",
     platforms: [
-       .macOS(.v13),
+       .macOS(.v15),
     ],
     products: [
         .executable(name: "App", targets: ["zokadictionary"]),
@@ -14,7 +14,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.8.0"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.4.0"),
-		.package(url: "https://github.com/jedisct1/swift-sodium.git", from: "0.11.0"),
+		.package(url: "https://github.com/glasfisch3000/argon2-swift.git", branch: "main"),
     ],
     targets: [
         .executableTarget(
@@ -24,7 +24,7 @@ let package = Package(
 				.product(name: "Leaf", package: "leaf"),
                 .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
                 .product(name: "Vapor", package: "vapor"),
-				.product(name: "Sodium", package: "swift-sodium"),
+				.product(name: "SwiftArgon2", package: "argon2-swift"),
             ],
 			swiftSettings: [
 				.unsafeFlags(["-Xfrontend", "-warn-long-function-bodies=50"], .when(configuration: .debug)),

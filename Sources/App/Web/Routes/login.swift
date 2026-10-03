@@ -34,7 +34,7 @@ extension WebRoutes {
 			return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
 		}
 		
-		switch user.verifyPassword(credentials.password) {
+		switch try await user.verifyPassword(credentials.password) {
 		case true: break
 		case false: return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
 		case nil:
@@ -42,7 +42,7 @@ extension WebRoutes {
 				return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
 			}
 			
-			user.passwordHash = try User.hashPassword(credentials.password)
+			user.passwordHash = try await User.hashPassword(credentials.password)
 		}
 		
 		req.session.authenticate(user)

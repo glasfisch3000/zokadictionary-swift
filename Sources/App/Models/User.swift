@@ -2,8 +2,10 @@ import Fluent
 import struct Foundation.Data
 import struct Foundation.UUID
 import Crypto
-import Sodium
+import SwiftArgon2
 import Vapor
+
+private let argon = try! Argon2(params: .init(variant: .argon2id))
 
 final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
     static let schema = "users"
@@ -50,20 +52,38 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
 
 // better password hashing
 extension User {
-	struct PasswordHashingError: Error { }
-	
-	static func hashPassword(_ password: String) throws(PasswordHashingError) -> String {
-		let sodium = Sodium().pwHash
-		if let hash = sodium.str(passwd: password.bytes, opsLimit: sodium.OpsLimitInteractive, memLimit: sodium.MemLimitInteractive) {
-			return hash
-		} else {
-			throw PasswordHashingError()
-		}
+	enum PasswordHashingError: Error {
+		case unableToGenerateRandomSalt
+		case unreadablePasswordHash
+		case unableToVerify
 	}
 	
-	func verifyPassword(_ passwordToCheck: String) -> Bool? {
-		let sodium = Sodium().pwHash
-		return self.passwordHash.map { sodium.strVerify(hash: $0, passwd: passwordToCheck.bytes) }
+	static func hashPassword(_ password: String, salt: Data? = nil) async throws -> String {
+		let saltData: Data
+		if let salt {
+			saltData = salt
+		} else {
+			let saltLength = 32
+			var bytes = [UInt8](repeating: 0, count: saltLength)
+			
+			guard SecRandomCopyBytes(kSecRandomDefault, saltLength, &bytes) == 0 else {
+				throw PasswordHashingError.unableToGenerateRandomSalt
+			}
+			saltData = Data(bytes)
+		}
+		
+		return try await argon.computeEncoded(password: Data(password.utf8), salt: saltData)
+	}
+	
+	func verifyPassword(_ passwordToCheck: String) async throws -> Bool? {
+		guard let passwordHash else {
+			return nil
+		}
+		
+		switch try await Argon2.verify(password: Data(passwordToCheck.utf8), encoded: passwordHash) {
+		case .some(let result): return result
+		case nil: throw PasswordHashingError.unableToVerify
+		}
 	}
 }
 

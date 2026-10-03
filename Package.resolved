@@ -1,6 +1,15 @@
 {
-  "originHash" : "be5a368d331b3005cf8baba739bc7fbeff14db29a58ac5ced1273f36a3997349",
+  "originHash" : "902e9aa28572879659bb1ca0e02d728d6424a948ae714fcb96ce3de83d752fc3",
   "pins" : [
+    {
+      "identity" : "argon2-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/glasfisch3000/argon2-swift.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "2a8b640f04a2cb7b9fd30ec3a1066d3c77389074"
+      }
+    },
     {
       "identity" : "async-http-client",
       "kind" : "remoteSourceControl",
@@ -305,15 +314,6 @@
       "state" : {
         "revision" : "7f9326b0326ff86e3646295ea6e891f68c471c5e",
         "version" : "2.12.0"
-      }
-    },
-    {
-      "identity" : "swift-sodium",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jedisct1/swift-sodium.git",
-      "state" : {
-        "revision" : "cfd195c76882aa9b997560ca7cb95d72fbf5db00",
-        "version" : "0.11.0"
       }
     },
     {
