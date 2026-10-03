@@ -34,16 +34,8 @@ extension WebRoutes {
 			return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
 		}
 		
-		switch try await user.verifyPassword(credentials.password) {
-		case true: break
-		case false: return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
-		case nil:
-			guard user.verifyPasswordOld(credentials.password) else {
-				return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
-			}
-			
-			user.passwordHash = try await User.hashPassword(credentials.password)
-			try await user.update(on: req.db)
+		guard try await user.verifyPassword(credentials.password) else {
+			return try await renderLogin(error: .invalidLoginData, return: returnPath, req: req)
 		}
 		
 		req.session.authenticate(user)

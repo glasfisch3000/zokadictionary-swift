@@ -37,7 +37,7 @@ extension WebRoutes {
 		let returnPath = try req.query.get(String?.self, at: "return")
 		let data = try req.content.decode(Data.self)
 		
-		guard try (await user.verifyPassword(data.password)) ?? user.verifyPasswordOld(data.password) else {
+		guard try await user.verifyPassword(data.password) else {
 			return try await renderChangeUsername(error: .passwordIncorrect, return: returnPath, user: user, req: req)
 		}
 		

@@ -20,22 +20,20 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
     var type: UserType
     
     @Field(key: "salt")
-    var saltOld: UUID
+    var saltOld: UUID?
     
     @Field(key: "password")
-    var passwordOld: Data
+    var passwordOld: Data?
 	
 	@Field(key: "password_hash_argon2")
-	var passwordHash: String?
+	var passwordHash: String
     
     init() { }
 
-    init(id: UUID? = nil, name: String, type: UserType, salt: UUID = UUID(), password: String) async throws {
+    init(id: UUID? = nil, name: String, type: UserType, password: String) async throws {
         self.id = id
         self.name = name
         self.type = type
-        self.saltOld = salt
-        self.passwordOld = Self.hashPasswordOld(password, salt: salt)
 		self.passwordHash = try await Self.hashPassword(password)
     }
     
@@ -46,8 +44,11 @@ final class User: Model, @unchecked Sendable, ModelSessionAuthenticatable {
         return Data(hasher.finalize())
     }
 	
-	func verifyPasswordOld(_ passwordToCheck: String) -> Bool {
-		Self.hashPasswordOld(passwordToCheck, salt: self.saltOld).elementsEqual(self.passwordOld)
+	func verifyPasswordOld(_ passwordToCheck: String) -> Bool? {
+		guard let passwordOld, let saltOld else {
+			return nil
+		}
+		return Self.hashPasswordOld(passwordToCheck, salt: saltOld).elementsEqual(passwordOld)
 	}
 }
 
@@ -69,11 +70,7 @@ extension User {
 		return try await argon.computeEncoded(password: Data(password.utf8), salt: saltData)
 	}
 	
-	func verifyPassword(_ passwordToCheck: String) async throws -> Bool? {
-		guard let passwordHash else {
-			return nil
-		}
-		
+	func verifyPassword(_ passwordToCheck: String) async throws -> Bool {
 		switch try await Argon2.verify(password: Data(passwordToCheck.utf8), encoded: passwordHash) {
 		case .some(let result): return result
 		case nil: throw PasswordHashingError.unableToVerify
