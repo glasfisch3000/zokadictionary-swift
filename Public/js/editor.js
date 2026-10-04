@@ -149,6 +149,8 @@ function fetchOptions(number, newValue) {
 			method: "GET",
 		})
 		.then(async (response) => {
+			wordFetchTask = null
+			
 			if (response.ok) {
 				let words = await response.json()
 				allWords = words
@@ -162,6 +164,7 @@ function fetchOptions(number, newValue) {
 			}
 		})
 		.catch(() => {
+			wordFetchTask = null
 			reportWordFetchError("Unable to fetch words.", select)
 		})
 	}
