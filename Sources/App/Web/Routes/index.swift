@@ -7,89 +7,121 @@ extension WebRoutes {
 		var words: [Identified<Word.DTOWithIdentifiedRelations>]
 		
 		var search: String?
+		var deleted: Bool
 	}
 	
 	func index(req: Request) async throws -> View {
 		let user = req.auth.get(User.self)
 		let searchString = try req.query.get(String?.self, at: "search")
+		let deleted = try req.query.get(Bool?.self, at: "deleted") ?? false
+		
+		if deleted {
+			guard let user else {
+				throw AuthError.missingLogin
+			}
+			guard user.type == .admin || user.type == .contributor else {
+				throw WebError.forbidden
+			}
+		}
+		
+		let query = if deleted {
+			Word.query(on: req.db)
+				.withDeleted()
+				.filter(\.$deleted != nil)
+				.with(\.$references, withDeleted: true) {
+					$0.with(\.$destination, withDeleted: true)
+				}
+				.with(\.$backReferences, withDeleted: true) {
+					$0.with(\.$source, withDeleted: true)
+				}
+				.with(\.$translations, withDeleted: true)
+		} else {
+			Word.query(on: req.db)
+				.with(\.$references) {
+					$0.with(\.$destination)
+				}
+				.with(\.$translations)
+		}
 		
 		if let searchString {
 			if searchString.count > 100 {
 				throw WebError.searchStringTooLarge
 			}
 			
-			let words = try await Word
-				.query(on: req.db)
-				.with(\.$references) {
-					$0.with(\.$destination)
-				}
-				.with(\.$translations)
-				.all()
+			let words = try await query.all()
 			
 			guard let results = try await search(searchString, in: words) else {
-				return try await renderIndex(user: user, words: [], search: searchString, req: req)
+				return try await renderIndex(user: user, words: [], search: searchString, deleted: deleted, req: req)
 			}
 			
 			if results.isEmpty {
-				return try await renderIndex(user: user, words: [], search: searchString, req: req)
+				return try await renderIndex(user: user, words: [], search: searchString, deleted: deleted, req: req)
 			}
 			
-			return try await renderIndex(user: user, words: results, search: searchString, req: req)
+			return try await renderIndex(user: user, words: results, search: searchString, deleted: deleted, req: req)
 		} else {
-			let words = try await Word
-				.query(on: req.db)
-				.with(\.$references) {
-					$0.with(\.$destination)
-				}
-				.with(\.$translations)
+			let words = try await query
 				.sort(\.$string, .ascending)
 				.sort(\.$type, .ascending)
 				.sort(\.$id, .ascending)
 				.all()
 			
-			return try await renderIndex(user: user, words: words, req: req)
+			return try await renderIndex(user: user, words: words, deleted: deleted, req: req)
 		}
 	}
 	
-	private func renderIndex(user: User?, words: [Word], search: String? = nil, req: Request) async throws -> View {
+	private func renderIndex(user: User?, words: [Word], search: String? = nil, deleted: Bool, req: Request) async throws -> View {
 		let context = IndexContext(
 			user: try user?.toDTO(),
 			words: try words.map { try $0.toDTOWithIdentifiedRelations() },
 			search: search,
+			deleted: deleted,
 		)
 		
 		return try await req.view.render("Pages/index", context)
 	}
 	
 	func getSearch(req: Request) async throws -> [Identified<Word.DTOWithIdentifiedRelations>] {
+		let user = req.auth.get(User.self)
 		let searchString = try req.query.get(String?.self, at: "search")
+		let deleted = try req.query.get(Bool?.self, at: "deleted") ?? false
+		
+		if deleted {
+			guard let user else {
+				throw AuthError.missingLogin
+			}
+			guard user.type == .admin || user.type == .contributor else {
+				throw WebError.forbidden
+			}
+		}
 		
 		let results: [Word]
+		let query = if deleted {
+			Word.query(on: req.db)
+				.withDeleted()
+				.filter(\.$deleted != nil)
+				.with(\.$references, withDeleted: true) {
+					$0.with(\.$destination, withDeleted: true)
+				}
+				.with(\.$translations, withDeleted: true)
+		} else {
+			Word.query(on: req.db)
+				.with(\.$references) {
+					$0.with(\.$destination)
+				}
+				.with(\.$translations)
+		}
+		
 		if let searchString {
 			if searchString.count > 100 {
 				throw Abort(.badRequest)
 			}
 			
-			let words = try await Word
-				.query(on: req.db)
-				.with(\.$references) {
-					$0.with(\.$destination)
-				}
-				.with(\.$translations)
-				.all()
+			let words = try await query.all()
 			
 			results = try await search(searchString, in: words) ?? []
 		} else {
-			results = try await Word
-				.query(on: req.db)
-				.with(\.$references) {
-					$0.with(\.$destination)
-				}
-				.with(\.$translations)
-				.sort(\.$string, .ascending)
-				.sort(\.$type, .ascending)
-				.sort(\.$id, .ascending)
-				.all()
+			results = try await query.all()
 		}
 		
 		return try results.map { try $0.toDTOWithIdentifiedRelations() }

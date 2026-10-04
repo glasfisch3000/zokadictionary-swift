@@ -27,12 +27,15 @@
 	pointer-events: auto;
 }
 #search-container > *:not(:first-child) {
-	margin-top: 2em;
+	margin-top: 0.5em;
 }
 
 #search-bar {
 	display: flex;
 	font-size: 130%;
+}
+#search-bar + * {
+	margin-top: 2em !important;
 }
 
 #search-bar > * {
@@ -79,6 +82,68 @@
 	color: inherit;
 }
 
+#search-options {
+	border: 1px solid #8888;
+	border-radius: 2em;
+	padding-left: 0.6em;
+	padding-right: 0.4em;
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
+	
+	background: #222a;
+	-webkit-backdrop-filter: blur(5px);
+	backdrop-filter: blur(5px);
+}
+
+#label-search-deleted {
+	display: flex;
+	width: stretch;
+	width: -webkit-fill-available;
+	align-items: center;
+}
+#label-search-deleted > .symbol {
+	font-size: 80%;
+	margin-right: 0.5em;
+}
+#label-search-deleted > .checkbox-switch {
+	margin-left: auto;
+}
+
+.checkbox-switch {
+	border-radius: 1.1em;
+	width: 1.8em;
+	height: 1.1em;
+	
+	background-color: #888;
+	cursor: pointer;
+	
+	transition: ease-in-out 0.1s;
+	-webkit-transition: ease-in-out 0.1s;
+}
+.checkbox-switch > input {
+	display: none;
+}
+.checkbox-switch > div {
+	position: relative;
+	left: 0.1em;
+	top: 0.1em;
+	
+	border-radius: 0.9em;
+	width: 0.9em;
+	height: 0.9em;
+	
+	background-color: #eee;
+	
+	transition: ease-in-out 0.1s;
+	-webkit-transition: ease-in-out 0.1s;
+}
+.checkbox-switch:has(> input:checked) {
+	background-color: #9a55a3;
+}
+.checkbox-switch:has(> input:checked) > div {
+	left: 0.8em;
+}
+
 #search-results {
 	border: 1px solid #8888;
 	border-radius: 1em;
@@ -87,7 +152,6 @@
 	padding-right: 0.4em;
 	max-height: calc(100% - 2.4em - 2px - 2em); /* 100% - (size of search bar) - (search bar border) - (margin) */
 	overflow-y: scroll;
-	box-sizing: border-box;
 	
 	background: #222a;
 	-webkit-backdrop-filter: blur(5px);
@@ -98,6 +162,11 @@
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	content: "No search results";
+	color: #eee;
+}
+
+:has(#search-deleted:checked) #search-results {
+	color: #f44;
 }
 
 #search-results > * {
@@ -115,6 +184,7 @@
 	padding-bottom: 0.35em;
 	
 	text-align: center;
+	color: #eee;
 	background: #c11a;
 }
 

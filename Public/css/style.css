@@ -91,6 +91,9 @@ select:required:invalid {
 .symbol {
 	font-family: SFPro;
 }
+.large-symbol {
+	font-size: 80%;
+}
 
 label.toggle > input {
 	/* hide the input toggle */

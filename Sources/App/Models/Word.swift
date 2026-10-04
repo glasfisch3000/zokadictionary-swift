@@ -18,6 +18,9 @@ final class Word: Model, @unchecked Sendable {
     
     @Children(for: \.$source)
     var references: [Reference]
+	
+	@Children(for: \.$destination)
+	var backReferences: [Reference]
     
     @Children(for: \.$word)
     var translations: [Translation]

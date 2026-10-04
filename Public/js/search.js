@@ -7,12 +7,17 @@ searchButton.addEventListener("change", (event) => {
 		controller.abort()
 		cancelSearch()
 		searchInput.value = ""
+		searchResults.innerHTML = ""
 	}
 })
 
 let searchInput = document.getElementById("search-input")
+let deletedToggle = document.getElementById("search-deleted")
 let searchResults = document.getElementById("search-results")
-searchInput.addEventListener("input", (event) => {
+searchInput.addEventListener("input", reloadSearch)
+deletedToggle.addEventListener("input", reloadSearch)
+
+function reloadSearch() {
 	controller.abort()
 	if (!searchInput.value) {
 		return
@@ -20,19 +25,19 @@ searchInput.addEventListener("input", (event) => {
 	
 	controller = new AbortController()
 	
-	fetch("/words?search=" + encodeURIComponent(searchInput.value), {
+	fetch("/words?search=" + encodeURIComponent(searchInput.value) + "&deleted=" + deletedToggle.checked, {
 		method: "get",
 		signal: controller.signal,
 	})
 	.then(applySearch)
 	.catch(cancelSearch)
-})
+}
 
 async function applySearch(response) {
-	searchResults.textContent = ""
-	
 	if (response.ok) {
 		let words = await response.json()
+		searchResults.textContent = ""
+		
 		for (let word of words) {
 			let parent = document.createElement("a")
 			parent.classList.add("search-item")
@@ -83,6 +88,8 @@ async function applySearch(response) {
 			}
 		}
 	} else {
+		searchResults.textContent = ""
+		
 		let error = document.createElement("div")
 		error.classList.add("error")
 		error.textContent = "Search failed."

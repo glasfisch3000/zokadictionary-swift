@@ -27,6 +27,7 @@ extension Word {
 		var deleted: Date?
 		
 		var references: [Identified<Reference.DTOWithDestination>]
+		var backReferences: [Identified<Reference.DTOWithDestination>]
 		var translations: [Identified<Translation.DTO>]
 	}
 	
@@ -51,6 +52,7 @@ extension Word {
 				type: self.type,
 				deleted: self.deleted,
 				references: try self.$references.value?.map { try $0.toDTO() } ?? [],
+				backReferences: try self.$backReferences.value?.map { try $0.toDTO() } ?? [],
 				translations: try self.$translations.value?.map { try $0.toDTO() } ?? [],
 			)
 		)

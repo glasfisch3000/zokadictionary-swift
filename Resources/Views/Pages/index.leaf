@@ -4,12 +4,12 @@
 	#endexport
 	
 	#export("title"):
-	ZokaDictionary
+	ZokaDictionary #if(deleted): - Deleted words #endif
 	#endexport
 	
 	#export("content"):
 	#if(search):
-	<div id="search-info">
+	<div class="search-info">
 		#if(count(words) > 0):
 		<div class="symbol"> 􀭥 </div>
 		<div> Search: "#(search)" </div>
@@ -18,7 +18,24 @@
 		<div class="error"> No search results for "#(search)" </div>
 		#endif
 		
-		<a id="clear-search" class="symbol" href="/"> 􀆄 </a>
+		#if(deleted):
+		<a class="symbol" href="/?deleted=true"> 􀆄 </a>
+		#else:
+		<a class="symbol" href="/"> 􀆄 </a>
+		#endif
+	</div>
+	#endif
+	
+	#if(deleted):
+	<div class="search-info">
+		<div class="symbol"> 􀈑 </div>
+		<div> Viewing deleted words </div>
+		
+		#if(search):
+		<a class="symbol" href="/?search=#(search)"> 􀆄 </a>
+		#else:
+		<a class="symbol" href="/"> 􀆄 </a>
+		#endif
 	</div>
 	#endif
 	
@@ -32,10 +49,17 @@
 				</a>
 				
 				#if(user.value.type == "admin" || user.value.type == "contributor"):
+				#if(deleted):
+				<div class="buttons">
+					<a class="small-button symbol" href="/words/#(word.id)/restore?return=#path"> 􀉌 </a>
+					<a class="small-button destructive symbol" href="/words/#(word.id)/delete-for-real-no-cap?return=#path"> 􀙬 </a>
+				</div>
+				#else:
 				<div class="buttons">
 					<a class="small-button symbol" href="/words/#(word.id)/edit?return=#path"> 􂽱 </a>
 					<a class="small-button destructive symbol" href="/words/#(word.id)/delete?return=#path"> 􀈑 </a>
 				</div>
+				#endif
 				#endif
 			</div>
 			
@@ -62,7 +86,37 @@
 				
 				#for(reference in word.value.references):
 				<div class="reference">
+					#if(reference.value.destination.value.deleted):
+					<a href="/\#word-#(reference.value.destination.id)" class="deleted-word-reference">
+						<span class="symbol"> 􀈑 </span>
+					#else:
 					<a href="\#word-#(reference.value.destination.id)">
+					#endif
+						<span wordType="#(reference.value.destination.value.type)">
+							#(reference.value.destination.value.string)
+						</span>
+						
+						#if(reference.value.comment):
+						<span class="comment"> (#(reference.value.comment)) </span>
+						#endif
+					</a>
+				</div>
+				#endfor
+			</div>
+			#endif
+			
+			#if(word.value.backReferences && count(word.value.backReferences) > 0):
+			<div class="other-info">
+				Referenced by:
+				
+				#for(reference in word.value.backReferences):
+				<div class="back-reference">
+					#if(reference.value.destination.value.deleted):
+					<a href="/\#word-#(reference.value.destination.id)" class="deleted-word-reference">
+						<span class="symbol"> 􀈑 </span>
+					#else:
+					<a href="\#word-#(reference.value.destination.id)">
+					#endif
 						<span wordType="#(reference.value.destination.value.type)">
 							#(reference.value.destination.value.string)
 						</span>
