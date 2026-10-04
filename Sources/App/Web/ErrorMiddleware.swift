@@ -47,14 +47,22 @@ private func withMappingErrors<T>(_ closure: () async throws -> T) async throws(
 		} else {
 			throw .other(debugInfo: error.localizedDescription)
 		}
-	} catch let error as Abort where error.status == .unprocessableEntity {
+	} catch let error as Abort {
+		switch error.status {
 		// vapor throws this when required url parameters can't be parsed correctly
-		throw .malformedRequest
-	} catch let error as Abort where error.status == .notFound {
-		throw .notFound
-	} catch let error as Abort where error.status == .unauthorized {
+		case .unprocessableEntity: throw .malformedRequest
 		// vapor throws this when a required login doesn't exist
-		throw .auth(.missingLogin)
+		case .unauthorized: throw .auth(.missingLogin)
+		case .notFound: throw .notFound
+		default:
+			if debug {
+				throw .internalError
+			} else {
+				throw .other(debugInfo: error.debugDescription)
+			}
+		}
+	} catch _ as RouteNotFound {
+		throw .notFound
 	} catch let error {
 		if debug {
 			throw .internalError
