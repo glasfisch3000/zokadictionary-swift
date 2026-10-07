@@ -185,6 +185,17 @@ function appendWordOptions(words, select) {
 		option.setAttribute("value", word.id)
 		option.setAttribute("wordType", word.value.type)
 		option.textContent = `${word.value.string} (${describeWordType(word.value.type)})`
+
+		if (word.value.translations && word.value.translations.length > 0) {
+			option.textContent += " – "
+			for (let i in word.value.translations) {
+				let translation = word.value.translations[i]
+				option.textContent += translation.value.translation
+
+				if (i < word.value.translations.length-1) option.textContent += ", "
+			}
+		}
+		
 		select.appendChild(option)
 	}
 }
