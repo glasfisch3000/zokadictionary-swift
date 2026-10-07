@@ -111,14 +111,14 @@
 				
 				#for(reference in word.value.backReferences):
 				<div class="back-reference">
-					#if(reference.value.destination.value.deleted):
-					<a href="/\#word-#(reference.value.destination.id)" class="deleted-word-reference">
+					#if(reference.value.source.value.deleted):
+					<a href="/\#word-#(reference.value.source.id)" class="deleted-word-reference">
 						<span class="symbol"> 􀈑 </span>
 					#else:
-					<a href="\#word-#(reference.value.destination.id)">
+					<a href="\#word-#(reference.value.source.id)">
 					#endif
-						<span wordType="#(reference.value.destination.value.type)">
-							#(reference.value.destination.value.string)
+						<span wordType="#(reference.value.source.value.type)">
+							#(reference.value.source.value.string)
 						</span>
 						
 						#if(reference.value.comment):

@@ -28,19 +28,22 @@ extension WebRoutes {
 			Word.query(on: req.db)
 				.withDeleted()
 				.filter(\.$deleted != nil)
-				.with(\.$references, withDeleted: true) {
-					$0.with(\.$destination, withDeleted: true)
+				.with(\.$references) {
+					$0.with(\.$destination)
 				}
-				.with(\.$backReferences, withDeleted: true) {
-					$0.with(\.$source, withDeleted: true)
+				.with(\.$backReferences) {
+					$0.with(\.$source)
 				}
-				.with(\.$translations, withDeleted: true)
+				.with(\.$translations)
 		} else {
 			Word.query(on: req.db)
 				.with(\.$references) {
 					$0.with(\.$destination)
 				}
+				.join(children: \.$references)
+				.join(from: Reference.self, parent: \.$destination)
 				.with(\.$translations)
+				.filter(Reference.self, \Reference.destination.$deleted != nil)
 		}
 		
 		if let searchString {
@@ -110,6 +113,7 @@ extension WebRoutes {
 					$0.with(\.$destination)
 				}
 				.with(\.$translations)
+				.filter(Reference.self, \Reference.destination.$deleted != nil)
 		}
 		
 		if let searchString {

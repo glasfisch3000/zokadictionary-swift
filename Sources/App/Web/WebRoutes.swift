@@ -40,6 +40,16 @@ struct WebRoutes: RouteCollection {
 				$0.get(use: getDeleteItem(req:))
 				$0.post(use: postDeleteItem(req:))
 			}
+			
+			word.group("restore") {
+				$0.get(use: getRestoreItem(req:))
+				$0.post(use: postRestoreItem(req:))
+			}
+			
+			word.group("delete-for-real-no-cap") {
+				$0.get(use: getPermanentlyDeleteItem(req:))
+				$0.post(use: postPermanentlyDeleteItem(req:))
+			}
 		}
 		
 		routes.grouped(User.guardMiddleware(throwing: AuthError.missingLogin)).group("users") { users in

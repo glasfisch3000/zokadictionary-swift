@@ -2,7 +2,7 @@ import Vapor
 import Fluent
 
 extension WebRoutes {
-	private struct DeleteItemContext: Encodable {
+	private struct PermanentlyDeleteItemContext: Encodable {
 		var user: Identified<User.DTO>
 		var `return`: String
 		var word: Identified<Word.DTOWithIdentifiedRelations>
@@ -11,15 +11,19 @@ extension WebRoutes {
 	
 	private func query(wordID: Word.IDValue, on db: any Database) -> QueryBuilder<Word> {
 		Word.query(on: db)
+			.withDeleted()
+			.filter(\.$deleted != nil)
 			.filter(\.$id == wordID)
-			.with(\.$translations)
-			.with(\.$references, {
-				$0.with(\.$destination)
+			.with(\.$translations, withDeleted: true)
+			.with(\.$references, withDeleted: true, {
+				$0.with(\.$destination, withDeleted: true)
 			})
-			.filter(Reference.self, \Reference.destination.$deleted != nil)
+			.with(\.$backReferences, withDeleted: true, {
+				$0.with(\.$source, withDeleted: true)
+			})
 	}
 	
-	func getDeleteItem(req: Request) async throws -> View {
+	func getPermanentlyDeleteItem(req: Request) async throws -> View {
 		guard let wordID = req.parameters.get("wordID", as: UUID.self) else {
 			throw WebError.malformedRequest
 		}
@@ -36,10 +40,10 @@ extension WebRoutes {
 		let returnPath = try req.query.get(String?.self, at: "return")
 		let dto = try word.toDTOWithIdentifiedRelations()
 		
-		return try await renderDeleteItem(word: dto, return: returnPath, user: user, req: req)
+		return try await renderParmanentlyDeleteItem(word: dto, return: returnPath, user: user, req: req)
 	}
 	
-	func postDeleteItem(req: Request) async throws -> View {
+	func postPermanentlyDeleteItem(req: Request) async throws -> View {
 		guard let wordID = req.parameters.get("wordID", as: UUID.self) else {
 			throw WebError.malformedRequest
 		}
@@ -56,18 +60,36 @@ extension WebRoutes {
 		let returnPath = try req.query.get(String?.self, at: "return")
 		let dto = try word.toDTOWithIdentifiedRelations()
 		
-		try await word.delete(on: req.db)
-		return try await renderDeleteItem(success: true, word: dto, return: returnPath, user: user, req: req)
+		try await req.db.transaction { db in
+			try await word.$translations
+				.query(on: db)
+				.withDeleted()
+				.delete()
+			
+			try await word.$references
+				.query(on: db)
+				.withDeleted()
+				.delete()
+			
+			try await word.$backReferences
+				.query(on: db)
+				.withDeleted()
+				.delete()
+			
+			try await word.delete(force: true, on: db)
+		}
+		
+		return try await renderParmanentlyDeleteItem(success: true, word: dto, return: returnPath, user: user, req: req)
 	}
 	
-	private func renderDeleteItem(success: Bool = false, word: Identified<Word.DTOWithIdentifiedRelations>, return: String?, user: User, req: Request) async throws -> View {
-		let context = DeleteItemContext(
+	private func renderParmanentlyDeleteItem(success: Bool = false, word: Identified<Word.DTOWithIdentifiedRelations>, return: String?, user: User, req: Request) async throws -> View {
+		let context = PermanentlyDeleteItemContext(
 			user: try user.toDTO(),
 			return: `return` ?? "/",
 			word: word,
 			success: success,
 		)
 		
-		return try await req.view.render("Pages/delete-item", context)
+		return try await req.view.render("Pages/permanently-delete-item", context)
 	}
 }

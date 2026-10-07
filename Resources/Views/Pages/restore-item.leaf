@@ -7,13 +7,13 @@
 	#endexport
 	
 	#export("title"):
-	ZokaDictionary - Delete word
+	ZokaDictionary - Restore word
 	#endexport
 	
 	#export("content"):
 	#if(success):
 	<div class="panel success">
-	Word deleted
+	Word restored
 	</div>
 	#else:
 	<div class="panel">
@@ -40,14 +40,36 @@
 					See also:
 					
 					#for(reference in word.value.references):
-					<span class="word-reference">#(reference.value.destination.value.string)</span>
+					<span class="word-reference">
+						#if(reference.value.destination.value.deleted):
+						<span class="symbol"> 􀈑 </span>
+						#endif
+						
+						#(reference.value.destination.value.string)
+					</span>
+					#endfor
+				</div>
+				#endif
+				
+				#if(count(word.value.backReferences) > 0):
+				<div class="word-other-info">
+					Referenced by:
+					
+					#for(reference in word.value.backReferences):
+					<span class="word-reference">
+						#if(reference.value.source.value.deleted):
+						<span class="symbol"> 􀈑 </span>
+						#endif
+						
+						#(reference.value.source.value.string)
+					</span>
 					#endfor
 				</div>
 				#endif
 			</section>
 			
 			<section id="buttons" class="submit-section">
-				<input class="submit-button destructive" type="submit" value="Delete" title="Delete"/>
+				<input class="submit-button" type="submit" value="Restore" title="Restore"/>
 				<a class="submit-button cancel" href="#(return)"> Cancel </a>
 			</section>
 		</form>

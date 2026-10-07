@@ -20,6 +20,7 @@ extension WebRoutes {
 			.with(\Word.$references, {
 				$0.with(\Reference.$destination)
 			})
+			.filter(Reference.self, \Reference.destination.$deleted != nil)
 			.first() else {
 			throw WebError.notFound
 		}
@@ -75,12 +76,14 @@ extension WebRoutes {
 			try await Translation
 				.query(on: db)
 				.filter(\.$word.$id == wordID)
-				.delete(force: true)
+				.delete()
 			
 			try await Reference
 				.query(on: db)
+				.with(\.$destination)
 				.filter(\.$source.$id == wordID)
-				.delete(force: true)
+				.filter(\.destination.$deleted != nil)
+				.delete()
 			
 			let translations = dto.translations.map {
 				Translation(translation: $0.translation, comment: $0.comment.flatMap { $0.isEmpty ? nil : $0 }, wordID: wordID)

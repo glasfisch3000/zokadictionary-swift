@@ -15,9 +15,6 @@ final class Reference: Model, @unchecked Sendable {
     
     @Field(key: "comment")
     var comment: String?
-	
-	@Timestamp(key: "deleted_at", on: .delete)
-	var deleted: Date?
     
     init() { }
     

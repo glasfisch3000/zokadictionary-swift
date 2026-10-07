@@ -29,6 +29,7 @@ public func configureDB(_ app: Application) async throws {
 	app.migrations.add(AddArgon2PasswordHashing())
 	app.migrations.add(MakeOldPasswordHashesOptional())
 	app.migrations.add(RemoveOldPasswordHashes())
+	app.migrations.add(RemoveSoftDeleteTranslationsAndReferences())
 	
 	app.migrations.add(CreateAdminUser())
 }
