@@ -23,3 +23,9 @@ extension Reference {
 		)
 	}
 }
+
+extension Reference.DTO {
+	mutating func validate() -> Bool {
+		Reference.validate(comment: &self.comment)
+	}
+}

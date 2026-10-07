@@ -2,6 +2,38 @@ import Vapor
 import Fluent
 
 extension WebRoutes {
+	private struct EditItemRequestDTO: Decodable {
+		var string: String
+		var type: Word.WordType
+		var translations: [Translation.DTO]
+		var references: [Reference.DTO]
+		
+		func validate() -> Self? {
+			var dto = self
+			
+			guard Word.validate(string: &dto.string) else {
+				return nil
+			}
+			
+			for case(let index, var item) in dto.translations.indexed() {
+				guard item.validate() else {
+					return nil
+				}
+				
+				dto.translations[index] = item
+			}
+			for case(let index, var item) in dto.references.indexed() {
+				guard item.validate() else {
+					return nil
+				}
+				
+				dto.references[index] = item
+			}
+			
+			return dto
+		}
+	}
+	
 	func getEditItem(req: Request) async throws -> View {
 		struct Context: Encodable {
 			var user: Identified<User.DTO>
@@ -42,13 +74,6 @@ extension WebRoutes {
 	}
 	
 	func postEditItem(req: Request) async throws -> Bool {
-		struct DTO: Codable {
-			var string: String
-			var type: Word.WordType
-			var translations: [Translation.DTO]
-			var references: [Reference.DTO]
-		}
-		
 		guard let wordID = req.parameters.get("wordID", as: UUID.self) else {
 			throw WebError.malformedRequest
 		}
@@ -62,9 +87,8 @@ extension WebRoutes {
 			throw WebError.forbidden
 		}
 		
-		let dto = try req.content.decode(DTO.self)
-		
-		if dto.string.isEmpty {
+		let dto = try req.content.decode(EditItemRequestDTO.self)
+		guard let dto = dto.validate() else {
 			return false
 		}
 		

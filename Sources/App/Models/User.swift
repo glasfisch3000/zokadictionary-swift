@@ -64,3 +64,19 @@ extension User {
 		case admin
 	}
 }
+
+extension User {
+	static func checkIsValid(username: String) -> Bool {
+		let validCharacters = CharacterSet.alphanumerics.union([".", "_", "-"])
+		
+		if username.isEmpty { return false }
+		guard username.rangeOfCharacter(from: validCharacters.inverted) == nil else { return false }
+		if username.count > 32 { return false }
+		return true
+	}
+	
+	static func checkIsValid(password: String) -> Bool {
+		if password.isEmpty { return false }
+		return true
+	}
+}

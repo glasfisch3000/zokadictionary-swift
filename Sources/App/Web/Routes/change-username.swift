@@ -41,7 +41,7 @@ extension WebRoutes {
 			return try await renderChangeUsername(error: .passwordIncorrect, return: returnPath, user: user, req: req)
 		}
 		
-		if data.newUsername.isEmpty {
+		guard User.checkIsValid(username: data.newUsername) else {
 			return try await renderChangeUsername(error: .invalidName, return: returnPath, user: user, req: req)
 		}
 		

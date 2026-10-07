@@ -18,3 +18,10 @@ extension Translation {
 		)
 	}
 }
+
+extension Translation.DTO {
+	mutating func validate() -> Bool {
+		Translation.validate(translation: &self.translation) &&
+		Translation.validate(comment: &self.comment)
+	}
+}

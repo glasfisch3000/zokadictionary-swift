@@ -25,3 +25,26 @@ final class Translation: Model, @unchecked Sendable {
         if let wordID = wordID { self.$word.id = wordID }
     }
 }
+
+extension Translation {
+	private static let validCharacters = CharacterSet.alphanumerics.union(.punctuationCharacters).union([" "])
+	
+	static func validate(translation: inout String) -> Bool {
+		translation = translation.trimmingCharacters(in: .whitespacesAndNewlines)
+		
+		if translation.isEmpty { return false }
+		guard translation.rangeOfCharacter(from: validCharacters.inverted) == nil else { return false }
+		if translation.count > 64 { return false }
+		return true
+	}
+	
+	static func validate(comment: inout String?) -> Bool {
+		guard let c = comment?.trimmingCharacters(in: .whitespacesAndNewlines) else { return true }
+		defer { comment = c }
+		
+		if c.isEmpty { return false }
+		guard c.rangeOfCharacter(from: validCharacters.inverted) == nil else { return false }
+		if c.count > 128 { return false }
+		return true
+	}
+}

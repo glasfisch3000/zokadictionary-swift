@@ -161,11 +161,11 @@ extension WebRoutes {
 		let returnPath = try req.query.get(String?.self, at: "return")
 		let dto = try req.content.decode(DTO.self)
 		
-		if dto.username.isEmpty {
+		guard User.checkIsValid(username: dto.username) else {
 			return try await renderNewUser(error: .invalidNewUsername, return: returnPath, user: user, req: req)
 		}
 		
-		if dto.newPassword.isEmpty {
+		guard User.checkIsValid(username: dto.newPassword) else {
 			return try await renderNewUser(error: .invalidNewPassword, return: returnPath, user: user, req: req)
 		}
 		

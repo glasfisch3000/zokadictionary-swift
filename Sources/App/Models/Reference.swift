@@ -25,3 +25,17 @@ final class Reference: Model, @unchecked Sendable {
         self.comment = comment
     }
 }
+
+extension Reference {
+	private static let validCharacters = CharacterSet.alphanumerics.union(.punctuationCharacters).union([" "])
+	
+	static func validate(comment: inout String?) -> Bool {
+		guard let c = comment?.trimmingCharacters(in: .whitespacesAndNewlines) else { return true }
+		defer { comment = c }
+		
+		if c.isEmpty { return false }
+		guard c.rangeOfCharacter(from: validCharacters.inverted) == nil else { return false }
+		if c.count > 128 { return false }
+		return true
+	}
+}

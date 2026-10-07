@@ -73,3 +73,16 @@ extension Word {
 		return (lhs.id?.uuidString ?? "") < (rhs.id?.uuidString ?? "")
 	}
 }
+
+extension Word {
+	private static let validCharacters = CharacterSet.alphanumerics.union(.punctuationCharacters).union([" "])
+	
+	static func validate(string: inout String) -> Bool {
+		string = string.trimmingCharacters(in: .whitespacesAndNewlines)
+		
+		if string.isEmpty { return false }
+		guard string.rangeOfCharacter(from: validCharacters.inverted) == nil else { return false }
+		if string.count > 64 { return false }
+		return true
+	}
+}

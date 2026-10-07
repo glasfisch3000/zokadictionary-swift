@@ -43,7 +43,7 @@ extension WebRoutes {
 			return try await renderChangePassword(error: .passwordIncorrect, return: returnPath, user: user, req: req)
 		}
 		
-		if data.newPassword.isEmpty {
+		guard User.checkIsValid(password: data.newPassword) else {
 			return try await renderChangePassword(error: .invalidNewPassword, return: returnPath, user: user, req: req)
 		}
 		
