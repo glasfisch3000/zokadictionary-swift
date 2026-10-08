@@ -36,7 +36,7 @@ function reloadSearch() {
 async function applySearch(response) {
 	if (response.ok) {
 		let words = await response.json()
-		searchResults.textContent = ""
+		searchResults.innerHTML = ""
 		
 		for (let word of words) {
 			let parent = document.createElement("a")
@@ -88,7 +88,7 @@ async function applySearch(response) {
 			}
 		}
 	} else {
-		searchResults.textContent = ""
+		searchResults.innerHTML = ""
 		
 		let error = document.createElement("div")
 		error.classList.add("error")
@@ -98,6 +98,8 @@ async function applySearch(response) {
 }
 
 function cancelSearch(error) {
+	if (error.name == "AbortError" && !controller.signal.aborted) return
+	
 	searchResults.innerHTML = ""
 
 	let div = document.createElement("div")
