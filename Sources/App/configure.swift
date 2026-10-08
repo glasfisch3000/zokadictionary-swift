@@ -8,11 +8,11 @@ public func configureDB(_ app: Application) async throws {
     app.databases.use(
         .postgres(
             configuration: .init(
-				hostname: AppConfig.global.databaseHost,
-                port: AppConfig.global.databasePort,
-                username: AppConfig.global.databaseUsername,
-                password: AppConfig.global.databasePassword,
-                database: AppConfig.global.databaseName,
+				hostname: AppConfig.global.database.host,
+				port: AppConfig.global.database.port,
+				username: AppConfig.global.database.username,
+				password: AppConfig.global.database.password,
+				database: AppConfig.global.database.database,
 				tls: .prefer(try .init(configuration: .clientDefault)),
             )
         ), as: .psql
