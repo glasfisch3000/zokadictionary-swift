@@ -40,11 +40,15 @@ extension Translation {
 	
 	static func validate(comment: inout String?) -> Bool {
 		guard let c = comment?.trimmingCharacters(in: .whitespacesAndNewlines) else { return true }
-		defer { comment = c }
 		
-		if c.isEmpty { return false }
+		if c.isEmpty {
+			comment = nil
+			return true
+		}
 		guard c.rangeOfCharacter(from: validCharacters.inverted) == nil else { return false }
 		if c.count > 128 { return false }
+		
+		comment = c
 		return true
 	}
 }
