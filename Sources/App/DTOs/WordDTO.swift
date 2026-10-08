@@ -27,7 +27,7 @@ extension Word {
 		var deleted: Date?
 		
 		var references: [Identified<Reference.DTOWithDestination>]
-		var backReferences: [Identified<Reference.DTOWithDestination>]
+		var backReferences: [Identified<Reference.DTOWithSource>]
 		var translations: [Identified<Translation.DTO>]
 	}
 	
@@ -43,7 +43,7 @@ extension Word {
 		)
 	}
 	
-	func toDTOWithIdentifiedRelations() throws -> Identified<DTOWithIdentifiedRelations> {
+	func toDTOWithIdentifiedRelations(withDeletedReferences: Bool = false) throws -> Identified<DTOWithIdentifiedRelations> {
 		.init(
 			id: try self.requireID(),
 			value: .init(
@@ -51,8 +51,8 @@ extension Word {
 				description: self.description,
 				type: self.type,
 				deleted: self.deleted,
-				references: try self.$references.value?.map { try $0.toDTO() } ?? [],
-				backReferences: try self.$backReferences.value?.map { try $0.toDTO() } ?? [],
+				references: try self.$references.value?.compactMap { try $0.toDTOWithDestination(withDeleted: withDeletedReferences) } ?? [],
+				backReferences: try self.$backReferences.value?.compactMap { try $0.toDTOWithSource(withDeleted: withDeletedReferences) } ?? [],
 				translations: try self.$translations.value?.map { try $0.toDTO() } ?? [],
 			)
 		)

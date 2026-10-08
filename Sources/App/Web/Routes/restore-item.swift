@@ -66,7 +66,7 @@ extension WebRoutes {
 		let context = RestoreItemContext(
 			user: try user.toDTO(),
 			return: `return` ?? "/",
-			word: try word.toDTOWithIdentifiedRelations(),
+			word: try word.toDTOWithIdentifiedRelations(withDeletedReferences: true),
 			success: success,
 		)
 		

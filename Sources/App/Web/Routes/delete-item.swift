@@ -14,9 +14,8 @@ extension WebRoutes {
 			.filter(\.$id == wordID)
 			.with(\.$translations)
 			.with(\.$references, {
-				$0.with(\.$destination)
+				$0.with(\.$destination, withDeleted: true)
 			})
-			.filter(Reference.self, \Reference.destination.$deleted != nil)
 	}
 	
 	func getDeleteItem(req: Request) async throws -> View {

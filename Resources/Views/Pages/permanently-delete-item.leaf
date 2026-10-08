@@ -42,7 +42,7 @@
 					#for(reference in word.value.references):
 					<span class="word-reference">
 						#if(reference.value.destination.value.deleted):
-						<span class="symbol"> 􀈑 </span>
+						<span class="symbol large-symbol"> 􀈑 </span>
 						#endif
 						
 						#(reference.value.destination.value.string)
@@ -58,7 +58,7 @@
 					#for(reference in word.value.backReferences):
 					<span class="word-reference">
 						#if(reference.value.source.value.deleted):
-						<span class="symbol"> 􀈑 </span>
+						<span class="symbol large-symbol"> 􀈑 </span>
 						#endif
 						
 						#(reference.value.source.value.string)

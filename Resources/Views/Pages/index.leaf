@@ -88,7 +88,7 @@
 				<div class="reference">
 					#if(reference.value.destination.value.deleted):
 					<a href="/\#word-#(reference.value.destination.id)" class="deleted-word-reference">
-						<span class="symbol"> 􀈑 </span>
+						<span class="symbol large-symbol"> 􀈑 </span>
 					#else:
 					<a href="\#word-#(reference.value.destination.id)">
 					#endif
@@ -113,7 +113,7 @@
 				<div class="back-reference">
 					#if(reference.value.source.value.deleted):
 					<a href="/\#word-#(reference.value.source.id)" class="deleted-word-reference">
-						<span class="symbol"> 􀈑 </span>
+						<span class="symbol large-symbol"> 􀈑 </span>
 					#else:
 					<a href="\#word-#(reference.value.source.id)">
 					#endif

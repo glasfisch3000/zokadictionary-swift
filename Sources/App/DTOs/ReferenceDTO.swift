@@ -12,12 +12,36 @@ extension Reference {
 		var comment: String?
 	}
 	
+	struct DTOWithSource: Hashable, Sendable, Content {
+		var source: Identified<Word.DTO>
+		var comment: String?
+	}
+	
 	// careful, this might panic if the destination hasn't been fetched!
-	func toDTO() throws -> Identified<DTOWithDestination> {
-		.init(
+	func toDTOWithDestination(withDeleted: Bool = false) throws -> Identified<DTOWithDestination>? {
+		guard withDeleted || self.destination.deleted == nil else {
+			return nil
+		}
+		
+		return .init(
 			id: try self.requireID(),
 			value: .init(
 				destination: try self.destination.toDTO(),
+				comment: self.comment,
+			)
+		)
+	}
+	
+	// careful, this might panic if the source hasn't been fetched!
+	func toDTOWithSource(withDeleted: Bool) throws -> Identified<DTOWithSource>? {
+		guard withDeleted || self.source.deleted == nil else {
+			return nil
+		}
+		
+		return .init(
+			id: try self.requireID(),
+			value: .init(
+				source: try self.source.toDTO(),
 				comment: self.comment,
 			)
 		)

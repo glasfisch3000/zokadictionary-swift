@@ -38,7 +38,7 @@ extension WebRoutes {
 		}
 		
 		let returnPath = try req.query.get(String?.self, at: "return")
-		let dto = try word.toDTOWithIdentifiedRelations()
+		let dto = try word.toDTOWithIdentifiedRelations(withDeletedReferences: true)
 		
 		return try await renderParmanentlyDeleteItem(word: dto, return: returnPath, user: user, req: req)
 	}
@@ -58,7 +58,7 @@ extension WebRoutes {
 		}
 		
 		let returnPath = try req.query.get(String?.self, at: "return")
-		let dto = try word.toDTOWithIdentifiedRelations()
+		let dto = try word.toDTOWithIdentifiedRelations(withDeletedReferences: true)
 		
 		try await req.db.transaction { db in
 			try await word.$translations

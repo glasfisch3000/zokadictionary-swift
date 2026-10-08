@@ -29,21 +29,18 @@ extension WebRoutes {
 				.withDeleted()
 				.filter(\.$deleted != nil)
 				.with(\.$references) {
-					$0.with(\.$destination)
+					$0.with(\.$destination, withDeleted: true)
 				}
 				.with(\.$backReferences) {
-					$0.with(\.$source)
+					$0.with(\.$source, withDeleted: true)
 				}
 				.with(\.$translations)
 		} else {
 			Word.query(on: req.db)
 				.with(\.$references) {
-					$0.with(\.$destination)
+					$0.with(\.$destination, withDeleted: true)
 				}
-				.join(children: \.$references)
-				.join(from: Reference.self, parent: \.$destination)
 				.with(\.$translations)
-				.filter(Reference.self, \Reference.destination.$deleted != nil)
 		}
 		
 		if let searchString {
@@ -76,7 +73,7 @@ extension WebRoutes {
 	private func renderIndex(user: User?, words: [Word], search: String? = nil, deleted: Bool, req: Request) async throws -> View {
 		let context = IndexContext(
 			user: try user?.toDTO(),
-			words: try words.map { try $0.toDTOWithIdentifiedRelations() },
+			words: try words.map { try $0.toDTOWithIdentifiedRelations(withDeletedReferences: deleted) },
 			search: search,
 			deleted: deleted,
 		)
@@ -110,10 +107,9 @@ extension WebRoutes {
 		} else {
 			Word.query(on: req.db)
 				.with(\.$references) {
-					$0.with(\.$destination)
+					$0.with(\.$destination, withDeleted: true)
 				}
 				.with(\.$translations)
-				.filter(Reference.self, \Reference.destination.$deleted != nil)
 		}
 		
 		if let searchString {
@@ -128,7 +124,7 @@ extension WebRoutes {
 			results = try await query.all()
 		}
 		
-		return try results.map { try $0.toDTOWithIdentifiedRelations() }
+		return try results.map { try $0.toDTOWithIdentifiedRelations(withDeletedReferences: deleted) }
 	}
 }
 
