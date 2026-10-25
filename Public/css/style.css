@@ -10,7 +10,7 @@
 body {
 	margin: 0px;
 	width: 100vw;
-	height: 100vh !important;
+	min-height: 100vh;
 	
 	color: #eee;
 	background: #111;
