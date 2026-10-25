@@ -10,3 +10,7 @@ db.sqlite
 .env.*
 ! .env.example
 .vscode
+/backup.sh
+/restore.sh
+/db_data
+/db_backups
