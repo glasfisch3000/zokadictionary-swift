@@ -60,10 +60,20 @@ services:
     command: ["migrate", "--revert"]
     deploy:
       replicas: 0
+  routes:
+    image: zokadictionary-swift:latest
+    build:
+      context: .
+    environment:
+      <<: *shared_environment
+    env_file: .env
+    command: ["routes"]
+    deploy:
+      replicas: 0
   db:
     image: postgres:16-alpine
     volumes:
-      - ./db_data:/var/lib/postgresql
+      - ./db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: *db_username
       POSTGRES_PASSWORD: *db_password
